@@ -5,21 +5,27 @@
   answers:
   - id: 11
     context: "Accept"
+    status: NEXT
   - id: 12
     context: "Reject"
+    status: DEFEAT
 - question:
     id: 2
     context: "You accept the challenge. Go up to the bridge to the captain?"
   answers:
   - id: 21
     context: "Climb the bridge"
+    status: NEXT
   - id: 22
     context: "Refuse to climb the bridge"
+    status: DEFEAT
 - question:
     id: 3
     context: "You climbed the bridge. Who are you?"
   answers:
     - id: 31
       context: "Tell the truth about yourself"
+      status: VICTORY
     - id: 32
       context: "Lie about yourself"
+      status: DEFEAT
