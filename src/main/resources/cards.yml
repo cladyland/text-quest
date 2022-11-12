@@ -1,0 +1,25 @@
+---
+- question:
+    id: 1
+    context: "You forgot everything. Accept the UFO challenge?"
+  answers:
+  - id: 11
+    context: "Accept"
+  - id: 12
+    context: "Reject"
+- question:
+    id: 2
+    context: "You accept the challenge. Go up to the bridge to the captain?"
+  answers:
+  - id: 21
+    context: "Climb the bridge"
+  - id: 22
+    context: "Refuse to climb the bridge"
+- question:
+    id: 3
+    context: "You climbed the bridge. Who are you?"
+  answers:
+    - id: 31
+      context: "Tell the truth about yourself"
+    - id: 32
+      context: "Lie about yourself"
