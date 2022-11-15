@@ -2,9 +2,12 @@ import lombok.Getter;
 
 public class Card {
     @Getter
-    private final Question question;
+    private Question question;
     @Getter
-    private final Answer[] answers;
+    private Answer[] answers;
+
+    public Card() {
+    }
 
     public Card(Question question, Answer[] answers) {
         this.question = question;

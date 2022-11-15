@@ -2,9 +2,12 @@ import lombok.Getter;
 
 public abstract class Sentence {
     @Getter
-    private final int id;
+    private int id;
     @Getter
-    private final String context;
+    private String context;
+
+    public Sentence() {
+    }
 
     public Sentence(int id, String context) {
         this.id = id;
