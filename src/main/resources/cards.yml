@@ -23,9 +23,9 @@
     id: 3
     context: "You climbed the bridge. Who are you?"
   answers:
-    - id: 31
-      context: "Tell the truth about yourself"
-      status: VICTORY
-    - id: 32
-      context: "Lie about yourself"
-      status: DEFEAT
+  - id: 31
+    context: "Tell the truth about yourself"
+    status: VICTORY
+  - id: 32
+    context: "Lie about yourself"
+    status: DEFEAT

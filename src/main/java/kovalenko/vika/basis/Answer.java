@@ -1,3 +1,5 @@
+package kovalenko.vika.basis;
+
 import lombok.Getter;
 
 public class Answer extends Sentence {
