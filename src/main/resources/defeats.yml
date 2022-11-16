@@ -1,7 +1,7 @@
 ---
-- id: 1
+- id: 12
   context: "You reject the challenge."
-- id: 2
+- id: 22
   context: "You refused to negotiate."
-- id: 3
+- id: 32
   context: "Your lie was discovered."
