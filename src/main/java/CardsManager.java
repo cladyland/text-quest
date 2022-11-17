@@ -13,8 +13,8 @@ import static java.util.Objects.isNull;
 
 public class CardsManager {
     private static CardsManager cardsManager;
-    private final String CARDS_YML_PATH = "src/main/resources/cards.yml";
-    private final String DEFEATS_YML_PATH = "src/main/resources/defeats.yml";
+    private final String CARDS_YML = "src/main/resources/cards.yml";
+    private final String DEFEATS_YML = "src/main/resources/defeats.yml";
     @Getter
     private final String VICTORY = "You came back home.";
     private List<Defeat> defeats;
@@ -41,23 +41,25 @@ public class CardsManager {
     }
 
     private void fillCards() {
-        deserializeYamlFile(CARDS_YML_PATH);
+        cards = deserializeYamlFile(CARDS_YML);
     }
 
     private void fillDefeatsList() {
-        deserializeYamlFile(DEFEATS_YML_PATH);
+        defeats = deserializeYamlFile(DEFEATS_YML);
     }
 
-    private void deserializeYamlFile(String filePath) {
+    private List deserializeYamlFile(String filePath) {
         try (var reader = new FileReader(filePath)) {
             var mapper = new YAMLMapper();
-            if (filePath.equals(CARDS_YML_PATH)) {
-                cards = mapper.readValue(reader, new TypeReference<>() {
+            List result = null;
+            if (filePath.equals(CARDS_YML)) {
+                result = mapper.readValue(reader, new TypeReference<List<Card>>() {
                 });
-            } else if (filePath.equals(DEFEATS_YML_PATH)) {
-                defeats = mapper.readValue(reader, new TypeReference<>() {
+            } else if (filePath.equals(DEFEATS_YML)) {
+                result = mapper.readValue(reader, new TypeReference<List<Defeat>>() {
                 });
             }
+            return result;
         } catch (IOException ex) {
             throw new RuntimeException("Failed to read file " + filePath, ex);
         }
