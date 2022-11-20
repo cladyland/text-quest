@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kovalenko.vika.PathsJsp.INDEX_JSP;
+
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
     private PlayerRepository playerRepository;
@@ -21,19 +23,31 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request
                 .getServletContext()
-                .getRequestDispatcher("/WEB-INF/index.jsp")
+                .getRequestDispatcher(INDEX_JSP.getPath())
                 .forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String nickName = req.getParameter("nickName");
-        playerRepository.registerNewPlayer(nickName);
+        String newNickName = req.getParameter("nickName");
+        if (!nickNameIsFree(newNickName)){
+            String busyName = "Sorry, this nickname is already taken";
+            req.setAttribute("wrongNickName", busyName);
+            doGet(req, resp);
+        }
+
+        playerRepository.registerNewPlayer(newNickName);
 
         var session = req.getSession();
-        session.setAttribute("nickName", nickName);
-        req.setAttribute("nickName", nickName);
+        session.setAttribute("nickName", newNickName);
+        resp.sendRedirect("/quest");
+    }
 
-        req.getRequestDispatcher("/WEB-INF/index2.jsp").forward(req, resp);
+    private boolean nickNameIsFree(String name){
+        return playerRepository
+                .getPlayers()
+                .keySet()
+                .stream()
+                .noneMatch(key -> key.equals(name));
     }
 }

@@ -9,15 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import static kovalenko.vika.PathsJsp.INDEX_JSP;
+
 @WebFilter(filterName = "NewNickNameFilter", value = "/register")
 public class NewNickNameFilter implements Filter {
-    private String wrongNickName;
+    private String wordlessNickName;
     private String underscoreName;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        wrongNickName = "Nickname can only contain letters, numbers and underscore symbol";
+        wordlessNickName = "Nickname can only contain letters, numbers and underscore symbol";
         underscoreName = "Nickname must contain at least one letter";
     }
 
@@ -26,7 +28,7 @@ public class NewNickNameFilter implements Filter {
         String nickName = servletRequest.getParameter("nickName");
 
         if (!isWordCharacter(nickName)) {
-            forwardWithWrongMessage(servletRequest, servletResponse, wrongNickName);
+            forwardWithWrongMessage(servletRequest, servletResponse, wordlessNickName);
         }
         if (isUnderscore(nickName)) {
             forwardWithWrongMessage(servletRequest, servletResponse, underscoreName);
@@ -56,7 +58,7 @@ public class NewNickNameFilter implements Filter {
 
         httpRequest
                 .getServletContext()
-                .getRequestDispatcher("/WEB-INF/index.jsp")
+                .getRequestDispatcher(INDEX_JSP.getPath())
                 .forward(request, response);
     }
 }
