@@ -4,32 +4,26 @@ import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Defeat;
 import lombok.Getter;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 public class CardsManager {
-    private static CardsManager cardsManager;
-    private final String CARDS_YML = "src/main/resources/cards.yml";
-    private final String DEFEATS_YML = "src/main/resources/defeats.yml";
     @Getter
     private final String VICTORY = "You came back home.";
     private List<Defeat> defeats;
     private List<Card> cards;
 
-    private CardsManager() {
-        fillCards();
-        fillDefeatsList();
+    public CardsManager() {
     }
 
-    public static CardsManager getInstance() {
-        if (isNull(cardsManager)) {
-            cardsManager = new CardsManager();
-        }
-        return cardsManager;
+    public void createCards(String ymlFileName) {
+        cards = deserializeYamlFile(ymlFileName);
+    }
+
+    public void createDefeats(String ymlFileName) {
+        defeats = deserializeYamlFile(ymlFileName);
     }
 
     public List<Card> getCards() {
@@ -40,28 +34,20 @@ public class CardsManager {
         return Collections.unmodifiableList(defeats);
     }
 
-    private void fillCards() {
-        cards = deserializeYamlFile(CARDS_YML);
-    }
-
-    private void fillDefeatsList() {
-        defeats = deserializeYamlFile(DEFEATS_YML);
-    }
-
-    private List deserializeYamlFile(String filePath) {
-        try (var reader = new FileReader(filePath)) {
-            var mapper = new YAMLMapper();
-            List result = null;
-            if (filePath.equals(CARDS_YML)) {
-                result = mapper.readValue(reader, new TypeReference<List<Card>>() {
-                });
-            } else if (filePath.equals(DEFEATS_YML)) {
-                result = mapper.readValue(reader, new TypeReference<List<Defeat>>() {
-                });
-            }
-            return result;
+    private List deserializeYamlFile(String fileName) {
+        List result;
+        var resource = getResourceURL(fileName);
+        var mapper = new YAMLMapper();
+        try {
+            result = mapper.readValue(resource, new TypeReference<>() {
+            });
         } catch (IOException ex) {
-            throw new RuntimeException("Failed to read file " + filePath, ex);
+            throw new RuntimeException("Failed to read file " + fileName, ex);
         }
+        return result;
+    }
+
+    private URL getResourceURL(String fileName) {
+        return getClass().getClassLoader().getResource(fileName);
     }
 }
