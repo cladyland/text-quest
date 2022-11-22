@@ -1,8 +1,16 @@
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static java.util.Objects.isNull;
+import static kovalenko.vika.PathsJsp.INDEX_JSP;
 
 @WebFilter(filterName = "AuthenticationFilter", value = "/")
 public class AuthenticationFilter implements Filter {
@@ -14,13 +22,17 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
         var httpRequest = (HttpServletRequest) servletRequest;
-        var currentSession = httpRequest.getSession();
         var httpResponse = (HttpServletResponse) servletResponse;
+        var currentSession = httpRequest.getSession();
+        var playerNickName = currentSession.getAttribute("nickName");
 
-        if (currentSession.isNew()){
-            httpResponse.sendRedirect("/register");
+        if (currentSession.isNew() || isNull(playerNickName)) {
+            httpRequest
+                    .getServletContext()
+                    .getRequestDispatcher(INDEX_JSP.getPath())
+                    .forward(servletRequest, servletResponse);
         } else {
-          //  servletRequest.setAttribute();
+            httpResponse.sendRedirect("/quest");
         }
     }
 
