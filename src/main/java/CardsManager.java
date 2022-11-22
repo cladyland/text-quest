@@ -12,6 +12,8 @@ import java.util.List;
 public class CardsManager {
     @Getter
     private final String VICTORY = "You came back home.";
+    private final String CARDS_PARAM = "cards";
+    private final String DEFEATS_PARAM = "defeats";
     private List<Defeat> defeats;
     private List<Card> cards;
 
@@ -19,11 +21,11 @@ public class CardsManager {
     }
 
     public void createCards(String ymlFileName) {
-        cards = deserializeYamlFile(ymlFileName);
+        deserializeYamlFile(ymlFileName, CARDS_PARAM);
     }
 
     public void createDefeats(String ymlFileName) {
-        defeats = deserializeYamlFile(ymlFileName);
+        deserializeYamlFile(ymlFileName, DEFEATS_PARAM);
     }
 
     public List<Card> getCards() {
@@ -34,17 +36,20 @@ public class CardsManager {
         return Collections.unmodifiableList(defeats);
     }
 
-    private List deserializeYamlFile(String fileName) {
-        List result;
+    private void deserializeYamlFile(String fileName, String param) {
         var resource = getResourceURL(fileName);
         var mapper = new YAMLMapper();
         try {
-            result = mapper.readValue(resource, new TypeReference<>() {
-            });
+            if (param.equals(CARDS_PARAM)) {
+                cards = mapper.readValue(resource, new TypeReference<>() {
+                });
+            } else if (param.equals(DEFEATS_PARAM)) {
+                defeats = mapper.readValue(resource, new TypeReference<>() {
+                });
+            }
         } catch (IOException ex) {
             throw new RuntimeException("Failed to read file " + fileName, ex);
         }
-        return result;
     }
 
     private URL getResourceURL(String fileName) {

@@ -58,7 +58,7 @@ public class NewNickNameFilter implements Filter {
 
         httpRequest
                 .getServletContext()
-                .getRequestDispatcher(INDEX_JSP.getPath())
+                .getRequestDispatcher(INDEX_JSP.toString())
                 .forward(request, response);
     }
 }

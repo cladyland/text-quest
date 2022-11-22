@@ -23,7 +23,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request
                 .getServletContext()
-                .getRequestDispatcher(INDEX_JSP.getPath())
+                .getRequestDispatcher(INDEX_JSP.toString())
                 .forward(request, response);
     }
 
@@ -39,9 +39,10 @@ public class RegisterServlet extends HttpServlet {
         playerRepository.registerNewPlayer(newNickName);
 
         var session = req.getSession();
-        int startQuestionId = 0;
+        session.setAttribute("player", new Player(newNickName));
         session.setAttribute("nickName", newNickName);
-        session.setAttribute("questionID", startQuestionId);
+        session.setAttribute("newPlayer", true);
+
         resp.sendRedirect("/quest");
     }
 

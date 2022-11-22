@@ -9,7 +9,9 @@ public enum PathsJsp {
         this.path = path;
     }
 
-    public String getPath() {
+    @Override
+    public String toString() {
         return path;
     }
+
 }

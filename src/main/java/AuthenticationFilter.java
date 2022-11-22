@@ -29,7 +29,7 @@ public class AuthenticationFilter implements Filter {
         if (currentSession.isNew() || isNull(playerNickName)) {
             httpRequest
                     .getServletContext()
-                    .getRequestDispatcher(INDEX_JSP.getPath())
+                    .getRequestDispatcher(INDEX_JSP.toString())
                     .forward(servletRequest, servletResponse);
         } else {
             httpResponse.sendRedirect("/quest");
