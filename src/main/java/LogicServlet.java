@@ -60,8 +60,8 @@ public class LogicServlet extends HttpServlet {
         Question question = card.getQuestion();
         List<Answer> answers = card.getAnswers();
 
-        session.setAttribute("question", question.getContext());
-        session.setAttribute("answers", answers);
+        req.setAttribute("question", question.getContext());
+        req.setAttribute("answers", answers);
 
         req
                 .getServletContext()
