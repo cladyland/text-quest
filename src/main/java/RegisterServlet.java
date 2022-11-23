@@ -31,7 +31,6 @@ public class RegisterServlet extends HttpServlet {
         var session = req.getSession();
         session.setAttribute("player", new Player(newNickName));
         session.setAttribute("nickName", newNickName);
-        session.setAttribute("newPlayer", true);
 
         resp.sendRedirect("/quest");
     }
