@@ -1,5 +1,6 @@
 ---
-- question:
+- id: 1
+  question:
     id: 1
     context: "You forgot everything. Accept the UFO challenge?"
   answers:
@@ -9,7 +10,8 @@
   - id: 12
     context: "Reject"
     status: DEFEAT
-- question:
+- id: 2
+  question:
     id: 2
     context: "You accept the challenge. Go up to the bridge to the captain?"
   answers:
@@ -19,7 +21,8 @@
   - id: 22
     context: "Refuse to climb the bridge"
     status: DEFEAT
-- question:
+- id: 3
+  question:
     id: 3
     context: "You climbed the bridge. Who are you?"
   answers:
