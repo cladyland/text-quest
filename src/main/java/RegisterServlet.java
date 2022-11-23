@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
-
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
     private PlayerRepository playerRepository;
@@ -20,17 +18,9 @@ public class RegisterServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request
-                .getServletContext()
-                .getRequestDispatcher(INDEX_JSP.toString())
-                .forward(request, response);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String newNickName = req.getParameter("nickName");
-        if (!nickNameIsFree(newNickName)){
+        if (!nickNameIsFree(newNickName)) {
             String busyName = "Sorry, this nickname is already taken";
             req.setAttribute("wrongNickName", busyName);
             doGet(req, resp);
@@ -46,11 +36,9 @@ public class RegisterServlet extends HttpServlet {
         resp.sendRedirect("/quest");
     }
 
-    private boolean nickNameIsFree(String name){
-        return playerRepository
+    private boolean nickNameIsFree(String name) {
+        return !playerRepository
                 .getPlayers()
-                .keySet()
-                .stream()
-                .noneMatch(key -> key.equals(name));
+                .containsKey(name);
     }
 }

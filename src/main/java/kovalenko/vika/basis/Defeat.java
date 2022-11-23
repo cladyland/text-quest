@@ -5,7 +5,7 @@ public class Defeat extends Sentence {
     public Defeat() {
     }
 
-    public Defeat(int id, String context) {
+    public Defeat(Integer id, String context) {
         super(id, context);
     }
 }

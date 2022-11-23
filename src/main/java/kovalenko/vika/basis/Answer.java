@@ -9,7 +9,7 @@ public class Answer extends Sentence {
     public Answer() {
     }
 
-    public Answer(int id, String context, Status status) {
+    public Answer(Integer id, String context, Status status) {
         super(id, context);
         this.status = status;
     }

@@ -6,9 +6,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
 import static kovalenko.vika.PathsJsp.INDEX_JSP;
 
 @WebFilter(filterName = "NewNickNameFilter", value = "/register")
@@ -26,6 +28,12 @@ public class NewNickNameFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String nickName = servletRequest.getParameter("nickName");
+
+        if (isNull(nickName)) {
+            var httpResponse = (HttpServletResponse) servletResponse;
+            httpResponse.sendRedirect("/");
+            return;
+        }
 
         if (!isWordCharacter(nickName)) {
             forwardWithWrongMessage(servletRequest, servletResponse, wordlessNickName);

@@ -5,7 +5,7 @@ public class Question extends Sentence {
     public Question() {
     }
 
-    public Question(int id, String context) {
+    public Question(Integer id, String context) {
         super(id, context);
     }
 }

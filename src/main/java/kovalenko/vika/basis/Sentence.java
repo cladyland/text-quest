@@ -4,14 +4,14 @@ import lombok.Getter;
 
 public abstract class Sentence {
     @Getter
-    private int id;
+    private Integer id;
     @Getter
     private String context;
 
     public Sentence() {
     }
 
-    public Sentence(int id, String context) {
+    public Sentence(Integer id, String context) {
         this.id = id;
         this.context = context;
     }
