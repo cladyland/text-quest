@@ -1,3 +1,4 @@
+import kovalenko.vika.basis.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +12,10 @@ public class Player {
     @Setter
     private boolean newcomer;
     @Getter
-    @Setter
     private Integer numberOfGames;
     @Getter
-    @Setter
     private Integer numberOfWins;
     @Getter
-    @Setter
     private Integer numberOfDefeats;
     private Map<String, Integer> playerStatistic;
 
@@ -36,5 +34,18 @@ public class Player {
         playerStatistic.put("Defeats", numberOfDefeats);
 
         return playerStatistic;
+    }
+
+    public void increaseNumberOfGames(Status status){
+        numberOfGames++;
+        if (isVictory(status)) {
+            numberOfWins++;
+        } else {
+            numberOfDefeats++;
+        }
+    }
+
+    private boolean isVictory(Status status){
+        return status.equals(Status.VICTORY);
     }
 }
