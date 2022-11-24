@@ -37,9 +37,10 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
-                .getServletContext()
-                .getRequestDispatcher(START_JSP.toString())
-                .forward(req, resp);
+                .getSession()
+                .removeAttribute("cardID");
+
+        forwardTo(START_JSP, req, resp);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class LogicServlet extends HttpServlet {
 
             Status answerStatus = playerAnswer.getStatus();
 
-            if (answerStatus == Status.NEXT){
+            if (answerStatus == Status.NEXT) {
                 nextQuestionId = playerCardId + 1;
                 session.setAttribute("cardID", nextQuestionId);
             } else if (answerStatus == Status.DEFEAT) {
@@ -69,9 +70,11 @@ public class LogicServlet extends HttpServlet {
                         .getContext();
 
                 req.setAttribute("defeat", defeatMessage);
+                session.removeAttribute("cardID");
                 forwardTo(END_JSP, req, resp);
             } else if (answerStatus == Status.VICTORY) {
                 req.setAttribute("victory", victoryMessage);
+                session.removeAttribute("cardID");
                 forwardTo(END_JSP, req, resp);
             }
 
@@ -96,13 +99,14 @@ public class LogicServlet extends HttpServlet {
                 .orElse(cardList.get(0));
     }
 
-    private Answer getAnswer(Card card, Integer answerId){
+    private Answer getAnswer(Card card, Integer answerId) {
+        var defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
         return card
                 .getAnswers()
                 .stream()
                 .filter(answer -> Objects.equals(answer.getId(), answerId))
                 .findAny()
-                .get();
+                .orElse(defaultAnswer);
     }
 
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
