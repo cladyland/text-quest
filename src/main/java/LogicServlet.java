@@ -1,3 +1,4 @@
+import kovalenko.vika.PathsJsp;
 import kovalenko.vika.basis.Answer;
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Defeat;
@@ -11,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.PathsJsp.END_JSP;
 import static kovalenko.vika.PathsJsp.QUEST_JSP;
 import static kovalenko.vika.PathsJsp.START_JSP;
 
@@ -22,6 +23,7 @@ import static kovalenko.vika.PathsJsp.START_JSP;
 public class LogicServlet extends HttpServlet {
     private List<Card> cardList;
     private List<Defeat> defeatList;
+    private String victoryMessage;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -29,6 +31,7 @@ public class LogicServlet extends HttpServlet {
         super.init();
         cardList = (List<Card>) getServletContext().getAttribute("cards");
         defeatList = (List<Defeat>) getServletContext().getAttribute("defeats");
+        victoryMessage = (String) getServletContext().getAttribute("victory");
     }
 
     @Override
@@ -42,39 +45,72 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
-        var player = (Player) session.getAttribute("player");
         var playerCardId = (Integer) session.getAttribute("cardID");
-        int nextQuestionId = playerCardId + 1;
+        Card playerCard = getCard(playerCardId);
 
-        if (nonNull(req.getParameter("answer"))) {
-            Integer playerAnswerId = Integer.parseInt(req.getParameter("answer"));
-            Answer playerAnswer = cardList
-                    .get(playerCardId)
-                    .getAnswers()
-                    .get(playerAnswerId);
+        int nextQuestionId = 1;
+        String answerParam = req.getParameter("playerAnswer");
+
+        if (nonNull(answerParam)) {
+            Integer playerAnswerId = Integer.parseInt(answerParam);
+            Answer playerAnswer = getAnswer(playerCard, playerAnswerId);
+
+            Status answerStatus = playerAnswer.getStatus();
+
+            if (answerStatus == Status.NEXT){
+                nextQuestionId = playerCardId + 1;
+                session.setAttribute("cardID", nextQuestionId);
+            } else if (answerStatus == Status.DEFEAT) {
+                String defeatMessage = defeatList
+                        .stream()
+                        .filter(defeat -> Objects.equals(defeat.getId(), playerAnswerId))
+                        .findAny()
+                        .get()
+                        .getContext();
+
+                req.setAttribute("defeat", defeatMessage);
+                forwardTo(END_JSP, req, resp);
+            } else if (answerStatus == Status.VICTORY) {
+                req.setAttribute("victory", victoryMessage);
+                forwardTo(END_JSP, req, resp);
+            }
 
         }
 
-        Card card = getCard(nextQuestionId);
+        Card nextCard = getCard(nextQuestionId);
 
-        Question question = card.getQuestion();
-        List<Answer> answers = card.getAnswers();
+        Question question = nextCard.getQuestion();
+        List<Answer> answers = nextCard.getAnswers();
 
         req.setAttribute("question", question.getContext());
         req.setAttribute("answers", answers);
 
-        req
-                .getServletContext()
-                .getRequestDispatcher(QUEST_JSP.toString())
-                .forward(req, resp);
+        forwardTo(QUEST_JSP, req, resp);
     }
 
-    private Card getCard(int questionId) {
+    private Card getCard(int cardId) {
         return cardList
                 .stream()
-                .filter(card -> card.getId() == questionId)
+                .filter(card -> card.getId() == cardId)
                 .findAny()
                 .orElse(cardList.get(0));
+    }
+
+    private Answer getAnswer(Card card, Integer answerId){
+        return card
+                .getAnswers()
+                .stream()
+                .filter(answer -> Objects.equals(answer.getId(), answerId))
+                .findAny()
+                .get();
+    }
+
+    private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        var forwardPath = jsp.toString();
+        req
+                .getServletContext()
+                .getRequestDispatcher(forwardPath)
+                .forward(req, resp);
     }
 
 }

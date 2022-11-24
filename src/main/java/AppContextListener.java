@@ -15,5 +15,6 @@ public class AppContextListener implements ServletContextListener {
         servletContext.setAttribute("playerRepository", new PlayerRepository());
         servletContext.setAttribute("cards", cardsManager.getCards());
         servletContext.setAttribute("defeats", cardsManager.getDefeats());
+        servletContext.setAttribute("victory", cardsManager.getVICTORY());
     }
 }
