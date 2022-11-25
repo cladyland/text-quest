@@ -46,6 +46,7 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
+        var player = (Player) session.getAttribute("player");
         var playerCardId = (Integer) session.getAttribute("cardID");
         Card playerCard = getCard(playerCardId);
 
@@ -53,31 +54,29 @@ public class LogicServlet extends HttpServlet {
         String answerParam = req.getParameter("playerAnswer");
 
         if (nonNull(answerParam)) {
-            Integer playerAnswerId = Integer.parseInt(answerParam);
+            int playerAnswerId = Integer.parseInt(answerParam);
             Answer playerAnswer = getAnswer(playerCard, playerAnswerId);
 
             Status answerStatus = playerAnswer.getStatus();
 
-            if (answerStatus == Status.NEXT) {
+            if (answerStatus == Status.DEFAULT) {
+                throw new RuntimeException("Answer with id " + playerAnswerId + " not found");
+            } else if (answerStatus == Status.NEXT) {
                 nextQuestionId = playerCardId + 1;
                 session.setAttribute("cardID", nextQuestionId);
-            } else if (answerStatus == Status.DEFEAT) {
-                String defeatMessage = defeatList
-                        .stream()
-                        .filter(defeat -> Objects.equals(defeat.getId(), playerAnswerId))
-                        .findAny()
-                        .get()
-                        .getContext();
+            } else {
+                if (answerStatus == Status.DEFEAT) {
+                    String defeatMessage = getDefeatMessage(playerAnswerId);
+                    req.setAttribute("defeat", defeatMessage);
+                } else if (answerStatus == Status.VICTORY) {
+                    req.setAttribute("victory", victoryMessage);
+                }
+                player.increaseNumberOfGames(answerStatus);
+                req.setAttribute("statistic", player.getPlayerStatistic());
+                session.removeAttribute("cardID");
 
-                req.setAttribute("defeat", defeatMessage);
-                session.removeAttribute("cardID");
-                forwardTo(END_JSP, req, resp);
-            } else if (answerStatus == Status.VICTORY) {
-                req.setAttribute("victory", victoryMessage);
-                session.removeAttribute("cardID");
                 forwardTo(END_JSP, req, resp);
             }
-
         }
 
         Card nextCard = getCard(nextQuestionId);
@@ -109,6 +108,16 @@ public class LogicServlet extends HttpServlet {
                 .orElse(defaultAnswer);
     }
 
+    private String getDefeatMessage(int answerId) {
+        var defaultDefeat = new Defeat(0, "Defeat");
+        return defeatList
+                .stream()
+                .filter(defeat -> Objects.equals(defeat.getId(), answerId))
+                .findAny()
+                .orElse(defaultDefeat)
+                .getContext();
+    }
+
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var forwardPath = jsp.toString();
         req
@@ -116,5 +125,4 @@ public class LogicServlet extends HttpServlet {
                 .getRequestDispatcher(forwardPath)
                 .forward(req, resp);
     }
-
 }
