@@ -1,7 +1,10 @@
+package kovalenko.vika;
+
 import kovalenko.vika.PathsJsp;
 import kovalenko.vika.basis.Answer;
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Defeat;
+import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Question;
 import kovalenko.vika.basis.Status;
 

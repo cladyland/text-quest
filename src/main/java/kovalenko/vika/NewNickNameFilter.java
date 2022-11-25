@@ -1,3 +1,5 @@
+package kovalenko.vika;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

@@ -1,4 +1,5 @@
-import kovalenko.vika.basis.Status;
+package kovalenko.vika.basis;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class Player {
         playerStatistic = new HashMap<>();
     }
 
-    public Map<String, Integer> getPlayerStatistic(){
+    public Map<String, Integer> getPlayerStatistic() {
         playerStatistic.put("Games", numberOfGames);
         playerStatistic.put("Wins", numberOfWins);
         playerStatistic.put("Defeats", numberOfDefeats);
@@ -36,7 +37,7 @@ public class Player {
         return playerStatistic;
     }
 
-    public void increaseNumberOfGames(Status status){
+    public void increaseNumberOfGames(Status status) {
         numberOfGames++;
         if (isVictory(status)) {
             numberOfWins++;
@@ -45,7 +46,7 @@ public class Player {
         }
     }
 
-    private boolean isVictory(Status status){
+    private boolean isVictory(Status status) {
         return status.equals(Status.VICTORY);
     }
 }

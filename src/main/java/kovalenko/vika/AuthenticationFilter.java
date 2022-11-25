@@ -1,3 +1,5 @@
+package kovalenko.vika;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -10,47 +12,35 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.PathsJsp.START_JSP;
+import static kovalenko.vika.PathsJsp.INDEX_JSP;
 
-@WebFilter(filterName = "LogicFilter", value = "/quest")
-public class LogicFilter implements Filter {
+@WebFilter(filterName = "AuthenticationFilter", value = "/")
+public class AuthenticationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
         var httpRequest = (HttpServletRequest) servletRequest;
         var httpResponse = (HttpServletResponse) servletResponse;
-        var session = httpRequest.getSession();
-        var player = (Player) session.getAttribute("player");
+        var currentSession = httpRequest.getSession();
+        var playerNickName = currentSession.getAttribute("nickName");
 
-        if (isNull(player)){
-            httpResponse.sendRedirect("/");
-            return;
-        }
-
-        if (player.isNewcomer()){
-            player.setNewcomer(false);
-
+        if (currentSession.isNew() || isNull(playerNickName)) {
             httpRequest
                     .getServletContext()
-                    .getRequestDispatcher(START_JSP.toString())
+                    .getRequestDispatcher(INDEX_JSP.toString())
                     .forward(servletRequest, servletResponse);
-
+        } else {
+            httpResponse.sendRedirect("/quest");
         }
-
-        if (isNull(session.getAttribute("cardID"))){
-            Integer startCardId = 1;
-            session.setAttribute("cardID", startCardId);
-        }
-
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
     public void destroy() {
         Filter.super.destroy();
     }
+
 }

@@ -1,3 +1,8 @@
+package kovalenko.vika;
+
+import kovalenko.vika.basis.Player;
+import kovalenko.vika.service.PlayerService;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -6,38 +11,50 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kovalenko.vika.PathsJsp.INDEX_JSP;
+
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
-    private PlayerRepository playerRepository;
+    private PlayerService playerService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var servletContext = config.getServletContext();
-        playerRepository = (PlayerRepository) servletContext.getAttribute("playerRepository");
+        playerService = (PlayerService) servletContext.getAttribute("playerService");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req
+                .getServletContext()
+                .getRequestDispatcher(INDEX_JSP.toString())
+                .forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String newNickName = req.getParameter("nickName");
-        if (!nickNameIsFree(newNickName)) {
-            String busyName = "Sorry, this nickname is already taken";
+        Player newPlayer = register(newNickName);
+
+        if (isDefaultPlayer(newPlayer)) {
+            String busyName = "Sorry, this name is already taken";
             req.setAttribute("wrongNickName", busyName);
             doGet(req, resp);
         }
 
-        playerRepository.registerNewPlayer(newNickName);
-
         var session = req.getSession();
-        session.setAttribute("player", new Player(newNickName));
+        session.setAttribute("player", newPlayer);
         session.setAttribute("nickName", newNickName);
 
         resp.sendRedirect("/quest");
     }
 
-    private boolean nickNameIsFree(String name) {
-        return !playerRepository
-                .getPlayers()
-                .containsKey(name);
+    private Player register(String nickName) {
+        return playerService.register(nickName);
+    }
+
+    private boolean isDefaultPlayer(Player player) {
+        return player.getNickName().equals("Default");
     }
 }

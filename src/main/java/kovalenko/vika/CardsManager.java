@@ -1,3 +1,5 @@
+package kovalenko.vika;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import kovalenko.vika.basis.Card;
