@@ -1,6 +1,7 @@
 package kovalenko.vika;
 
 import kovalenko.vika.service.PlayerService;
+import kovalenko.vika.service.QuestService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -16,12 +17,14 @@ public class AppContextListener implements ServletContextListener {
         cardsManager.createCards("cards.yml");
         cardsManager.createDefeats("defeats.yml");
 
+        var questService = new QuestService(
+                cardsManager.getCards(),
+                cardsManager.getDefeats(),
+                cardsManager.getVICTORY());
+
         var servletContext = contextEvent.getServletContext();
 
-        servletContext.setAttribute("playerRepository", playerRepository);
         servletContext.setAttribute("playerService", playerService);
-        servletContext.setAttribute("cards", cardsManager.getCards());
-        servletContext.setAttribute("defeats", cardsManager.getDefeats());
-        servletContext.setAttribute("victory", cardsManager.getVICTORY());
+        servletContext.setAttribute("questService", questService);
     }
 }

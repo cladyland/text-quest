@@ -1,12 +1,10 @@
 package kovalenko.vika;
 
-import kovalenko.vika.PathsJsp;
-import kovalenko.vika.basis.Answer;
 import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Defeat;
 import kovalenko.vika.basis.Player;
-import kovalenko.vika.basis.Question;
 import kovalenko.vika.basis.Status;
+import kovalenko.vika.service.PlayerService;
+import kovalenko.vika.service.QuestService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.PathsJsp.END_JSP;
@@ -24,17 +20,14 @@ import static kovalenko.vika.PathsJsp.START_JSP;
 
 @WebServlet(name = "LogicServlet", value = "/quest")
 public class LogicServlet extends HttpServlet {
-    private List<Card> cardList;
-    private List<Defeat> defeatList;
-    private String victoryMessage;
+    private QuestService questService;
+    private PlayerService playerService;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init() throws ServletException {
         super.init();
-        cardList = (List<Card>) getServletContext().getAttribute("cards");
-        defeatList = (List<Defeat>) getServletContext().getAttribute("defeats");
-        victoryMessage = (String) getServletContext().getAttribute("victory");
+        questService = (QuestService) getServletContext().getAttribute("questService");
+        playerService = (PlayerService) getServletContext().getAttribute("playerService");
     }
 
     @Override
@@ -51,74 +44,34 @@ public class LogicServlet extends HttpServlet {
         var session = req.getSession();
         var player = (Player) session.getAttribute("player");
         var playerCardId = (Integer) session.getAttribute("cardID");
-        Card playerCard = getCard(playerCardId);
-
-        int nextQuestionId = 1;
         String answerParam = req.getParameter("playerAnswer");
+
+        Card playerCard = questService.getCurrentCard(playerCardId);
 
         if (nonNull(answerParam)) {
             int playerAnswerId = Integer.parseInt(answerParam);
-            Answer playerAnswer = getAnswer(playerCard, playerAnswerId);
+            Status playerStatus = questService.getPlayerAnswerStatus(playerCardId, playerAnswerId);
 
-            Status answerStatus = playerAnswer.getStatus();
-
-            if (answerStatus == Status.DEFAULT) {
-                throw new RuntimeException("Answer with id " + playerAnswerId + " not found");
-            } else if (answerStatus == Status.NEXT) {
-                nextQuestionId = playerCardId + 1;
-                session.setAttribute("cardID", nextQuestionId);
+            if (playerStatus == Status.NEXT) {
+                playerCard = questService.getNextCard(playerCardId);
+                session.setAttribute("cardID", playerCard.getId());
             } else {
-                if (answerStatus == Status.DEFEAT) {
-                    String defeatMessage = getDefeatMessage(playerAnswerId);
-                    req.setAttribute("defeat", defeatMessage);
-                } else if (answerStatus == Status.VICTORY) {
-                    req.setAttribute("victory", victoryMessage);
+                if (playerStatus == Status.DEFEAT) {
+                    req.setAttribute("defeat", questService.getDefeatMessage(playerAnswerId));
+                } else if (playerStatus == Status.VICTORY) {
+                    req.setAttribute("victory", questService.getVictoryMessage());
                 }
-                player.increaseNumberOfGames(answerStatus);
-                req.setAttribute("statistic", player.getPlayerStatistic());
+                req.setAttribute("statistic", playerService.setAndGetPlayerStatistic(player, playerStatus));
                 session.removeAttribute("cardID");
 
                 forwardTo(END_JSP, req, resp);
             }
         }
 
-        Card nextCard = getCard(nextQuestionId);
-
-        Question question = nextCard.getQuestion();
-        List<Answer> answers = nextCard.getAnswers();
-
-        req.setAttribute("question", question.getContext());
-        req.setAttribute("answers", answers);
+        req.setAttribute("question", playerCard.getQuestion().getContext());
+        req.setAttribute("answers", playerCard.getAnswers());
 
         forwardTo(QUEST_JSP, req, resp);
-    }
-
-    private Card getCard(int cardId) {
-        return cardList
-                .stream()
-                .filter(card -> card.getId() == cardId)
-                .findAny()
-                .orElse(cardList.get(0));
-    }
-
-    private Answer getAnswer(Card card, Integer answerId) {
-        var defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
-        return card
-                .getAnswers()
-                .stream()
-                .filter(answer -> Objects.equals(answer.getId(), answerId))
-                .findAny()
-                .orElse(defaultAnswer);
-    }
-
-    private String getDefeatMessage(int answerId) {
-        var defaultDefeat = new Defeat(0, "Defeat");
-        return defeatList
-                .stream()
-                .filter(defeat -> Objects.equals(defeat.getId(), answerId))
-                .findAny()
-                .orElse(defaultDefeat)
-                .getContext();
     }
 
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

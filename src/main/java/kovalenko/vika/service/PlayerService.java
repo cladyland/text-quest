@@ -2,6 +2,9 @@ package kovalenko.vika.service;
 
 import kovalenko.vika.PlayerRepository;
 import kovalenko.vika.basis.Player;
+import kovalenko.vika.basis.Status;
+
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -23,6 +26,11 @@ public class PlayerService {
         return playerRepository
                 .getPlayers()
                 .get(nickName);
+    }
+
+    public Map<String, Integer> setAndGetPlayerStatistic(Player player, Status status){
+        player.increaseNumberOfGames(status);
+        return player.getPlayerStatistic();
     }
 
     private boolean nickNameIsBusy(String name) {
