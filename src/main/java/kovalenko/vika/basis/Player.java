@@ -1,12 +1,14 @@
 package kovalenko.vika.basis;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Player {
+    @NonNull
     @Getter
     private final String nickName;
     @Getter
