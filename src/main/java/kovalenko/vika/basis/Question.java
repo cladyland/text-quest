@@ -1,9 +1,9 @@
 package kovalenko.vika.basis;
 
-public class Question extends Sentence {
+import lombok.NoArgsConstructor;
 
-    public Question() {
-    }
+@NoArgsConstructor
+public class Question extends Sentence {
 
     public Question(Integer id, String context) {
         super(id, context);

@@ -1,9 +1,9 @@
 package kovalenko.vika.basis;
 
-public class Defeat extends Sentence {
+import lombok.NoArgsConstructor;
 
-    public Defeat() {
-    }
+@NoArgsConstructor
+public class Defeat extends Sentence {
 
     public Defeat(Integer id, String context) {
         super(id, context);
