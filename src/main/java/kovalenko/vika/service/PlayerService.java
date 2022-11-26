@@ -12,7 +12,7 @@ import static java.util.Objects.isNull;
 public class PlayerService {
     private final Player defaultPlayer;
     @NonNull
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
 
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
@@ -31,6 +31,10 @@ public class PlayerService {
     }
 
     public Map<String, Integer> setAndGetPlayerStatistic(Player player, Status status){
+        if (isNull(status)){
+            throw new NullPointerException("Status cannot be null!");
+        }
+
         player.increaseNumberOfGames(status);
         return player.getPlayerStatistic();
     }
