@@ -33,10 +33,7 @@ public class Player {
     }
 
     public Map<String, Integer> getPlayerStatistic() {
-        playerStatistic.put("Games", numberOfGames);
-        playerStatistic.put("Wins", numberOfWins);
-        playerStatistic.put("Defeats", numberOfDefeats);
-
+        setPlayerStatistic();
         return playerStatistic;
     }
 
@@ -60,5 +57,11 @@ public class Player {
 
     private boolean isVictory(Status status) {
         return status.equals(Status.VICTORY);
+    }
+
+    private void setPlayerStatistic(){
+        playerStatistic.put("Games", numberOfGames);
+        playerStatistic.put("Wins", numberOfWins);
+        playerStatistic.put("Defeats", numberOfDefeats);
     }
 }

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -23,8 +26,8 @@ public class PlayerTest {
     }
 
     @Test
-    void test_increaseNumberOfGames_verify(){
-        Status status = Status.DEFAULT;
+    void increaseNumberOfGames_verify(){
+        Status status = Status.VICTORY;
         Player mockPlayer = Mockito.spy(player);
         mockPlayer.increaseNumberOfGames(status);
 
@@ -32,7 +35,7 @@ public class PlayerTest {
     }
 
     @Test
-    void test_increaseNumberOfGames_status_Victory(){
+    void increaseNumberOfGames_status_Victory(){
         player.increaseNumberOfGames(Status.VICTORY);
         expectedGames = 1;
         expectedWins = 1;
@@ -44,7 +47,7 @@ public class PlayerTest {
     }
 
     @Test
-    void test_increaseNumberOfGames_status_Defeat(){
+    void increaseNumberOfGames_status_Defeat(){
         player.increaseNumberOfGames(Status.DEFEAT);
         expectedGames = 1;
         expectedWins = 0;
@@ -56,10 +59,31 @@ public class PlayerTest {
     }
 
     @Test
-    void test_increaseNumberOfGames_inappropriate_status(){
+    void increaseNumberOfGames_inappropriate_status(){
         assertThrows(PlayerSettingsException.class,
                 () -> player.increaseNumberOfGames(Status.NEXT));
     }
+
+    @Test
+    void increaseNumberOfGames_status_Null(){
+        assertThrows(PlayerSettingsException.class,
+                () -> player.increaseNumberOfGames(null));
+    }
+
+    @Test
+    void getPlayerStatistic_change_statistic(){
+        Map<String, Integer> expected = new HashMap<>();
+        expected.put("Games", 3);
+        expected.put("Wins", 1);
+        expected.put("Defeats", 2);
+
+        player.increaseNumberOfGames(Status.VICTORY);
+        player.increaseNumberOfGames(Status.DEFEAT);
+        player.increaseNumberOfGames(Status.DEFEAT);
+
+        assertEquals(expected, player.getPlayerStatistic());
+    }
+
 
     private int numberOfGames(){
         return player.getNumberOfGames();

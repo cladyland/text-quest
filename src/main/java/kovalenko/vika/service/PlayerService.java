@@ -3,6 +3,7 @@ package kovalenko.vika.service;
 import kovalenko.vika.PlayerRepository;
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
+import lombok.NonNull;
 
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import static java.util.Objects.isNull;
 
 public class PlayerService {
     private final Player defaultPlayer;
+    @NonNull
     private PlayerRepository playerRepository;
 
     public PlayerService(PlayerRepository playerRepository) {
