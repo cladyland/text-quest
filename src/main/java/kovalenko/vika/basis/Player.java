@@ -1,5 +1,6 @@
 package kovalenko.vika.basis;
 
+import kovalenko.vika.service.exception.PlayerSettingsException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -40,12 +41,21 @@ public class Player {
     }
 
     public void increaseNumberOfGames(Status status) {
+        if (!isStatusToChangeStatistic(status)){
+            String exceptionMessage = "Status %s does not affect the change of the player's statistics";
+            throw new PlayerSettingsException(String.format(exceptionMessage, status));
+        }
+
         numberOfGames++;
         if (isVictory(status)) {
             numberOfWins++;
         } else {
             numberOfDefeats++;
         }
+    }
+
+    private boolean isStatusToChangeStatistic(Status status){
+        return status == Status.VICTORY || status == Status.DEFEAT;
     }
 
     private boolean isVictory(Status status) {
