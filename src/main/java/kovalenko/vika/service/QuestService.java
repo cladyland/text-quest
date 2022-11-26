@@ -6,17 +6,30 @@ import kovalenko.vika.basis.Defeat;
 import kovalenko.vika.basis.Status;
 import kovalenko.vika.service.exception.QuestDefaultException;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 @AllArgsConstructor
 public class QuestService {
+    @NonNull
     private List<Card> cardList;
+    @NonNull
     private List<Defeat> defeatList;
+    @NonNull
     private String victoryMessage;
 
     public Status getPlayerAnswerStatus(Integer cardId, Integer answerId){
+        if (isNull(cardId)){
+            throw new NullPointerException("cardId cannot be null!");
+        }
+        if (isNull(answerId)){
+            throw new NullPointerException("answerId cannot be null!");
+        }
+
         Card playerCard = getCard(cardId);
         Answer playerAnswer = getAnswer(playerCard, answerId);
         Status status = playerAnswer.getStatus();
