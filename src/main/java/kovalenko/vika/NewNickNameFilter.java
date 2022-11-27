@@ -24,7 +24,7 @@ public class NewNickNameFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
         wordlessNickName = "Nickname can only contain letters, numbers and underscore symbol";
-        underscoreName = "Nickname must contain at least one letter";
+        underscoreName = "Nickname must contain at least one letter or numeric";
     }
 
     @Override
