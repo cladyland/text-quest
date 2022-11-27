@@ -3,8 +3,9 @@ package kovalenko.vika;
 import kovalenko.vika.basis.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
@@ -21,59 +22,42 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class LogicFilterTest {
     @Mock
     private HttpServletRequest request;
-
     @Mock
     private HttpServletResponse response;
-
     @Mock
     private FilterChain chain;
-
     @Mock
     private HttpSession session;
-
     @Mock
     private RequestDispatcher dispatcher;
-
     @Mock
     private ServletContext context;
-
     @Mock
     private Player player;
-
     private LogicFilter logicFilter;
 
     @BeforeEach
     void init() {
-        request = Mockito.mock(HttpServletRequest.class);
-        response = Mockito.mock(HttpServletResponse.class);
-        chain = Mockito.mock(FilterChain.class);
-        session = Mockito.mock(HttpSession.class);
-        dispatcher = Mockito.mock(RequestDispatcher.class);
-        context = Mockito.mock(ServletContext.class);
-        player = Mockito.mock(Player.class);
-
         logicFilter = new LogicFilter();
-
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("player")).thenReturn(player);
-        when(request.getServletContext()).thenReturn(context);
-        when(player.isNewcomer()).thenReturn(false);
     }
 
     @Test
     void doFilter_redirect_if_player_isNull() throws ServletException, IOException {
         when(session.getAttribute("player")).thenReturn(null);
         logicFilter.doFilter(request, response, chain);
-
         verify(response, times(1)).sendRedirect("/");
     }
 
     @Test
     void doFilter_dispatcher_StartJsp_if_player_isNewcomer() throws ServletException, IOException {
         when(player.isNewcomer()).thenReturn(true);
+        when(request.getServletContext()).thenReturn(context);
         when(context.getRequestDispatcher(START_JSP.toString())).thenReturn(dispatcher);
 
         logicFilter.doFilter(request, response, chain);

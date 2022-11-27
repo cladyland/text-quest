@@ -2,10 +2,11 @@ package kovalenko.vika;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
@@ -21,37 +22,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class NewNickNameFilterTest {
     private final String nickNameParam = "nickName";
     @Mock
     private HttpServletRequest request;
-
     @Mock
     private HttpServletResponse response;
-
     @Mock
     private FilterChain chain;
-
     @Mock
     private RequestDispatcher dispatcher;
-
     @Mock
     private ServletContext context;
-
     private NewNickNameFilter nameFilter;
 
     @BeforeEach
     void init() {
-        request = Mockito.mock(HttpServletRequest.class);
-        response = Mockito.mock(HttpServletResponse.class);
-        chain = Mockito.mock(FilterChain.class);
-        dispatcher = Mockito.mock(RequestDispatcher.class);
-        context = Mockito.mock(ServletContext.class);
-
         nameFilter = new NewNickNameFilter();
-
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
     }
 
     @Test
@@ -65,6 +53,8 @@ class NewNickNameFilterTest {
     @ParameterizedTest
     @CsvSource({"*&%", "name*/"})
     void doFilter_forward_if_name_nonWordCharacter(String nonWordName) throws ServletException, IOException {
+        when(request.getServletContext()).thenReturn(context);
+        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
         when(request.getParameter(nickNameParam)).thenReturn(nonWordName);
         nameFilter.doFilter(request, response, chain);
 
@@ -73,6 +63,8 @@ class NewNickNameFilterTest {
 
     @Test
     void doFilter_forward_if_name_isUnderscoreSymbols() throws ServletException, IOException {
+        when(request.getServletContext()).thenReturn(context);
+        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
         when(request.getParameter(nickNameParam)).thenReturn("_______");
         nameFilter.doFilter(request, response, chain);
 
