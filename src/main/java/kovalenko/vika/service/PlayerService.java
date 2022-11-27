@@ -39,6 +39,10 @@ public class PlayerService {
         return player.getPlayerStatistic();
     }
 
+    public boolean isDefaultPlayer(Player player){
+        return player.equals(defaultPlayer);
+    }
+
     private boolean nickNameIsBusy(String name) {
         return playerRepository
                 .getPlayers()

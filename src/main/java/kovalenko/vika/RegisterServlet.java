@@ -35,12 +35,13 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String newNickName = req.getParameter("nickName");
-        Player newPlayer = register(newNickName);
+        Player newPlayer = playerService.register(newNickName);
 
-        if (isDefaultPlayer(newPlayer)) {
+        if (playerService.isDefaultPlayer(newPlayer)) {
             String busyName = "Sorry, this name is already taken";
             req.setAttribute("wrongNickName", busyName);
             doGet(req, resp);
+            return;
         }
 
         var session = req.getSession();
@@ -48,13 +49,5 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("nickName", newNickName);
 
         resp.sendRedirect("/quest");
-    }
-
-    private Player register(String nickName) {
-        return playerService.register(nickName);
-    }
-
-    private boolean isDefaultPlayer(Player player) {
-        return player.getNickName().equals("Default");
     }
 }
