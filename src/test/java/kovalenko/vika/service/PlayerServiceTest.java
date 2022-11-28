@@ -5,8 +5,10 @@ import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,19 +19,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class PlayerServiceTest {
     private final String defaultPlayerName = "Default";
     private final String testName = "Test";
     @Mock
     private PlayerRepository playerRepository;
-
+    @Mock
+    private Player player;
+    private Map<String, Player> players;
     private PlayerService playerService;
 
     @BeforeEach
     void init() {
-        playerRepository = Mockito.mock(PlayerRepository.class);
+        players = new HashMap<>();
         playerService = new PlayerService(playerRepository);
-        when(playerRepository.getPlayers()).thenReturn(Mockito.mock(Map.class));
     }
 
     @Test
@@ -40,25 +44,27 @@ class PlayerServiceTest {
 
     @Test
     void register_return_defaultPlayer_if_name_isBusy() {
-        when(playerRepository.getPlayers().containsKey(testName)).thenReturn(true);
+        players.put(testName, player);
+        when(playerRepository.getPlayers()).thenReturn(players);
         String actual = playerService.register(testName).getNickName();
 
         assertEquals(defaultPlayerName, actual);
     }
 
     @Test
-    void register_added_and_return_newPlayer() {
+    void register_added_and_return_newPlayer2() {
+        players = Mockito.mock(Map.class);
+        when(playerRepository.getPlayers()).thenReturn(players);
         when(playerRepository.getPlayers().containsKey(testName)).thenReturn(false);
         when(playerRepository.getPlayers().get(testName)).thenReturn(new Player(testName));
-        Player actual = playerService.register(testName);
+        String actual = playerService.register(testName).getNickName();
 
         verify(playerRepository, times(1)).registerNewPlayer(testName);
-        assertEquals(testName, actual.getNickName());
+        assertEquals(testName, actual);
     }
 
     @Test
-    void setAndGetPlayerStatistic_return_playerStatistic(){
-        var player = Mockito.mock(Player.class);
+    void setAndGetPlayerStatistic_return_playerStatistic() {
         Map<String, Integer> statistic = new HashMap<>();
         statistic.put("Games", 5);
         statistic.put("Wins", 3);
@@ -71,18 +77,19 @@ class PlayerServiceTest {
     }
 
     @Test
-    void setAndGetPlayerStatistic_ThrowException_when_first_arg_isNull(){
+    void setAndGetPlayerStatistic_ThrowException_when_first_arg_isNull() {
         assertThrows(NullPointerException.class,
                 () -> playerService.setAndGetPlayerStatistic(null, Status.VICTORY));
     }
 
     @Test
-    void setAndGetPlayerStatistic_ThrowException_when_second_arg_isNull(){
+    void setAndGetPlayerStatistic_ThrowException_when_second_arg_isNull() {
         assertThrows(NullPointerException.class,
                 () -> playerService.setAndGetPlayerStatistic(new Player(testName), null));
     }
+
     @Test
-    void setAndGetPlayerStatistic_ThrowException_when_both_args_Null(){
+    void setAndGetPlayerStatistic_ThrowException_when_both_args_Null() {
         assertThrows(NullPointerException.class,
                 () -> playerService.setAndGetPlayerStatistic(null, null));
     }

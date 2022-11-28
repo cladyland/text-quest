@@ -6,6 +6,7 @@ import kovalenko.vika.basis.Status;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,10 +25,11 @@ public class LogicServlet extends HttpServlet {
     private PlayerService playerService;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        questService = (QuestService) getServletContext().getAttribute("questService");
-        playerService = (PlayerService) getServletContext().getAttribute("playerService");
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        var servletContext = config.getServletContext();
+        questService = (QuestService) servletContext.getAttribute("questService");
+        playerService = (PlayerService) servletContext.getAttribute("playerService");
     }
 
     @Override
@@ -44,7 +46,7 @@ public class LogicServlet extends HttpServlet {
         var session = req.getSession();
         var player = (Player) session.getAttribute("player");
         var playerCardId = (Integer) session.getAttribute("cardID");
-        String answerParam = req.getParameter("playerAnswer");
+        String answerParam = req.getParameter("playerAnswerId");
 
         Card playerCard = questService.getCurrentCard(playerCardId);
 
@@ -65,6 +67,7 @@ public class LogicServlet extends HttpServlet {
                 session.removeAttribute("cardID");
 
                 forwardTo(END_JSP, req, resp);
+                return;
             }
         }
 

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,6 +79,6 @@ class NewNickNameFilterTest {
         nameFilter.doFilter(request, response, chain);
 
         verify(chain, times(1)).doFilter(request, response);
-        verify(dispatcher, times(0)).forward(request, response);
+        verify(dispatcher, never()).forward(request, response);
     }
 }
