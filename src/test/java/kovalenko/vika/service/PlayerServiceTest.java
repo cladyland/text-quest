@@ -1,6 +1,6 @@
 package kovalenko.vika.service;
 
-import kovalenko.vika.PlayerRepository;
+import kovalenko.vika.db.PlayerRepository;
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
 import org.junit.jupiter.api.BeforeEach;

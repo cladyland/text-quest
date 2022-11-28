@@ -1,5 +1,7 @@
 package kovalenko.vika;
 
+import kovalenko.vika.db.CardsManager;
+import kovalenko.vika.db.PlayerRepository;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 

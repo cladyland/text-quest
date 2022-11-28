@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.db;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

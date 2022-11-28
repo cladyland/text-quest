@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.db;
 
 public enum PathsJsp {
     INDEX_JSP("/WEB-INF/index.jsp"),
@@ -7,6 +7,7 @@ public enum PathsJsp {
     END_JSP("/WEB-INF/end.jsp");
 
     private final String path;
+
     PathsJsp(String path) {
         this.path = path;
     }

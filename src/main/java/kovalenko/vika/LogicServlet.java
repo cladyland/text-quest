@@ -3,6 +3,7 @@ package kovalenko.vika;
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
+import kovalenko.vika.db.PathsJsp;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 
@@ -15,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.PathsJsp.END_JSP;
-import static kovalenko.vika.PathsJsp.QUEST_JSP;
-import static kovalenko.vika.PathsJsp.START_JSP;
+import static kovalenko.vika.db.PathsJsp.END_JSP;
+import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
+import static kovalenko.vika.db.PathsJsp.START_JSP;
 
 @WebServlet(name = "LogicServlet", value = "/quest")
 public class LogicServlet extends HttpServlet {

@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static kovalenko.vika.PathsJsp.END_JSP;
-import static kovalenko.vika.PathsJsp.QUEST_JSP;
-import static kovalenko.vika.PathsJsp.START_JSP;
+import static kovalenko.vika.db.PathsJsp.END_JSP;
+import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
+import static kovalenko.vika.db.PathsJsp.START_JSP;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.PathsJsp.START_JSP;
+import static kovalenko.vika.db.PathsJsp.START_JSP;
 
 @WebFilter(filterName = "LogicFilter", value = "/quest")
 public class LogicFilter implements Filter {

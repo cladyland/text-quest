@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.db;
 
 import kovalenko.vika.basis.Player;
 import lombok.Getter;

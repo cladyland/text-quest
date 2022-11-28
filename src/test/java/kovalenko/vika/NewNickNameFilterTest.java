@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

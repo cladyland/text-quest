@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
 @WebFilter(filterName = "AuthenticationFilter", value = "/")
 public class AuthenticationFilter implements Filter {

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
 @WebFilter(filterName = "NewNickNameFilter", value = "/register")
 public class NewNickNameFilter implements Filter {

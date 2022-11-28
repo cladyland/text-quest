@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.db;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-import static kovalenko.vika.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ class AuthenticationFilterTest {
     private AuthenticationFilter authenticationFilter;
 
     @BeforeEach
-    void init(){
+    void init() {
         authenticationFilter = new AuthenticationFilter();
         when(request.getSession()).thenReturn(session);
     }

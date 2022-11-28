@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-import static kovalenko.vika.PathsJsp.START_JSP;
+import static kovalenko.vika.db.PathsJsp.START_JSP;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
