@@ -1,6 +1,8 @@
 package kovalenko.vika;
 
 import kovalenko.vika.basis.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,9 +20,12 @@ import static kovalenko.vika.db.PathsJsp.START_JSP;
 
 @WebFilter(filterName = "LogicFilter", value = "/quest")
 public class LogicFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(LogicFilter.class);
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
+        LOG.info("'Logic Filter' is initialized");
     }
 
     @Override
@@ -30,12 +35,12 @@ public class LogicFilter implements Filter {
         var session = httpRequest.getSession();
         var player = (Player) session.getAttribute("player");
 
-        if (isNull(player)){
+        if (isNull(player)) {
             httpResponse.sendRedirect("/");
             return;
         }
 
-        if (player.isNewcomer()){
+        if (player.isNewcomer()) {
             player.setNewcomer(false);
 
             httpRequest
@@ -45,7 +50,7 @@ public class LogicFilter implements Filter {
 
         }
 
-        if (isNull(session.getAttribute("cardID"))){
+        if (isNull(session.getAttribute("cardID"))) {
             Integer startCardId = 1;
             session.setAttribute("cardID", startCardId);
         }
@@ -56,5 +61,6 @@ public class LogicFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
+        LOG.info("'Logic Filter' is destroyed");
     }
 }

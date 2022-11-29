@@ -2,6 +2,8 @@ package kovalenko.vika;
 
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.service.PlayerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,6 +17,8 @@ import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterServlet.class);
+
     private PlayerService playerService;
 
     @Override
@@ -22,6 +26,8 @@ public class RegisterServlet extends HttpServlet {
         super.init(config);
         var servletContext = config.getServletContext();
         playerService = (PlayerService) servletContext.getAttribute("playerService");
+
+        LOG.info("'Player Service' is initialized");
     }
 
     @Override

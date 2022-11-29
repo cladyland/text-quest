@@ -1,5 +1,8 @@
 package kovalenko.vika;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -17,6 +20,8 @@ import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
 @WebFilter(filterName = "NewNickNameFilter", value = "/register")
 public class NewNickNameFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(NewNickNameFilter.class);
+
     private String wordlessNickName;
     private String underscoreName;
 
@@ -25,6 +30,8 @@ public class NewNickNameFilter implements Filter {
         Filter.super.init(filterConfig);
         wordlessNickName = "Nickname can only contain letters, numbers and underscore symbol";
         underscoreName = "Nickname must contain at least one letter or numeric";
+
+        LOG.info("'New Nick Name Filter' is initialized");
     }
 
     @Override
@@ -38,10 +45,14 @@ public class NewNickNameFilter implements Filter {
         }
 
         if (!isWordCharacter(nickName)) {
+            LOG.warn("Failed to register user '{}': nickname contains invalid characters", nickName);
             forwardWithWrongMessage(servletRequest, servletResponse, wordlessNickName);
+            return;
         }
         if (isUnderscore(nickName)) {
+            LOG.warn("Failed to register user '{}': nickname contains only underscore symbol", nickName);
             forwardWithWrongMessage(servletRequest, servletResponse, underscoreName);
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -50,6 +61,7 @@ public class NewNickNameFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
+        LOG.info("'New Nick Name Filter' is destroyed");
     }
 
     private boolean isWordCharacter(String word) {

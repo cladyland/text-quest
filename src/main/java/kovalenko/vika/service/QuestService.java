@@ -7,6 +7,8 @@ import kovalenko.vika.basis.Status;
 import kovalenko.vika.service.exception.QuestDefaultException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,10 @@ import static java.util.Objects.isNull;
 
 @AllArgsConstructor
 public class QuestService {
+    private static final Logger LOG = LoggerFactory.getLogger(QuestService.class);
+
+    private final Answer defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
+    private final Defeat defaultDefeat = new Defeat(0, "Defeat");
     @NonNull
     private List<Card> cardList;
     @NonNull
@@ -22,11 +28,14 @@ public class QuestService {
     @NonNull
     private String victoryMessage;
 
-    public Status getPlayerAnswerStatus(Integer cardId, Integer answerId){
-        if (isNull(cardId)){
+    public Status getPlayerAnswerStatus(Integer cardId, Integer answerId) {
+        String failGetStatus = "Failed to get player answer status: ";
+        if (isNull(cardId)) {
+            LOG.error(failGetStatus + "cardId is null");
             throw new NullPointerException("cardId cannot be null!");
         }
-        if (isNull(answerId)){
+        if (isNull(answerId)) {
+            LOG.error(failGetStatus + "answerId is null");
             throw new NullPointerException("answerId cannot be null!");
         }
 
@@ -34,28 +43,30 @@ public class QuestService {
         Answer playerAnswer = getAnswer(playerCard, answerId);
         Status status = playerAnswer.getStatus();
 
-        if (status == Status.DEFAULT){
-            String answerNotFound = "Answer with id %d on the card with id %d is not found.";
+        if (status == Status.DEFAULT) {
+            String answerNotFound = String
+                    .format("Answer with id %d on the card with id %d is not found.", answerId, cardId);
 
-            throw new QuestDefaultException(String.format(answerNotFound, answerId, cardId));
+            LOG.error(answerNotFound);
+            throw new QuestDefaultException(answerNotFound);
         }
         return status;
     }
 
-    public Card getCurrentCard(Integer cardId){
+    public Card getCurrentCard(Integer cardId) {
         return getCard(cardId);
     }
 
-    public Card getNextCard(Integer cardId){
+    public Card getNextCard(Integer cardId) {
         int nextCardId = cardId + 1;
         return getCard(nextCardId);
     }
 
-    public String getDefeatMessage(Integer answerId){
+    public String getDefeatMessage(Integer answerId) {
         return defeatMessage(answerId);
     }
 
-    public String getVictoryMessage(){
+    public String getVictoryMessage() {
         return victoryMessage;
     }
 
@@ -68,7 +79,6 @@ public class QuestService {
     }
 
     private Answer getAnswer(Card card, Integer answerId) {
-        var defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
         return card
                 .getAnswers()
                 .stream()
@@ -78,7 +88,6 @@ public class QuestService {
     }
 
     private String defeatMessage(int answerId) {
-        var defaultDefeat = new Defeat(0, "Defeat");
         return defeatList
                 .stream()
                 .filter(defeat -> Objects.equals(defeat.getId(), answerId))

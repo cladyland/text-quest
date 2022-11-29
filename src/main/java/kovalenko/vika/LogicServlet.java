@@ -6,6 +6,8 @@ import kovalenko.vika.basis.Status;
 import kovalenko.vika.db.PathsJsp;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,6 +24,8 @@ import static kovalenko.vika.db.PathsJsp.START_JSP;
 
 @WebServlet(name = "LogicServlet", value = "/quest")
 public class LogicServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(LogicServlet.class);
+
     private QuestService questService;
     private PlayerService playerService;
 
@@ -31,6 +35,8 @@ public class LogicServlet extends HttpServlet {
         var servletContext = config.getServletContext();
         questService = (QuestService) servletContext.getAttribute("questService");
         playerService = (PlayerService) servletContext.getAttribute("playerService");
+
+        LOG.info("'Logic Servlet' is initialized");
     }
 
     @Override

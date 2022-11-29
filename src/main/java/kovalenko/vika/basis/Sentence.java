@@ -16,8 +16,8 @@ public abstract class Sentence {
     private String context;
 
     public Sentence(@NonNull Integer id, @NonNull String context) {
-        if (id <= 0) {
-            LOG.error("Cannot instantiate the class {}: id less or equals 0", this.getClass().getSimpleName());
+        if (id < 0) {
+            LOG.error("Cannot instantiate the class {}: id less than 0", this.getClass().getSimpleName());
             throw new IllegalArgumentException("ID must be greater than zero!");
         }
         if (context.isBlank()) {
