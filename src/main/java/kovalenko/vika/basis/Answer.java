@@ -10,6 +10,7 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 public class Answer extends Sentence {
     private static final Logger LOG = LoggerFactory.getLogger(Answer.class);
+
     @Getter
     private Status status;
 

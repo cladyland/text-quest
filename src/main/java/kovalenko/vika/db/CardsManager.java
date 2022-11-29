@@ -5,13 +5,19 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Defeat;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 public class CardsManager {
+    private static final Logger LOG = LoggerFactory.getLogger(CardsManager.class);
+
     @Getter
     private final String VICTORY = "You came back home.";
     private final String CARDS_PARAM = "cards";
@@ -40,6 +46,15 @@ public class CardsManager {
 
     private void deserializeYamlFile(String fileName, String param) {
         var resource = getResourceURL(fileName);
+
+        if (isNull(resource)) {
+            var message = String
+                    .format("Could not find the file or filename has a non-yml extension: '%s'", fileName);
+
+            LOG.error(message);
+            throw new IllegalArgumentException(message);
+        }
+
         var mapper = new YAMLMapper();
         try {
             if (param.equals(CARDS_PARAM)) {
@@ -48,9 +63,18 @@ public class CardsManager {
             } else if (param.equals(DEFEATS_PARAM)) {
                 defeats = mapper.readValue(resource, new TypeReference<>() {
                 });
+            } else {
+                String message = param + " is not found, file cannot be deserialized";
+                LOG.error(message);
+                throw new IllegalArgumentException(message);
             }
+
+            LOG.info(String.format("File '%s' deserialized successfully", fileName));
+
         } catch (IOException ex) {
-            throw new RuntimeException("Failed to read file " + fileName, ex);
+            var message = String.format("Failed to read file '%s'", fileName);
+            LOG.error(message, ex.getCause());
+            throw new RuntimeException(message, ex);
         }
     }
 

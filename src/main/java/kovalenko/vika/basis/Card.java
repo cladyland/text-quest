@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Card {
     private static final Logger LOG = LoggerFactory.getLogger(Card.class);
+
     @Getter
     private Integer id;
     @Getter

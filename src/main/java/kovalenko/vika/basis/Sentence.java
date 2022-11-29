@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 @NoArgsConstructor
 public abstract class Sentence {
     private static final Logger LOG = LoggerFactory.getLogger(Sentence.class);
+
     @Getter
     private Integer id;
     @Getter
