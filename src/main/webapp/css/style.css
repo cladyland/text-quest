@@ -36,3 +36,10 @@ div {
     font-family: "Calibri", sans-serif;
     text-align: center;
 }
+
+.end-message {
+    color: beige;
+    text-shadow: 2px 2px 5px greenyellow;
+    font-size: x-large;
+    text-align: center;
+}
