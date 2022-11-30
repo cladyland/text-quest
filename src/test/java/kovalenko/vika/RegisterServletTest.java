@@ -66,8 +66,6 @@ class RegisterServletTest {
 
     @Test
     void doPost_call_doGet_if_player_isDefault() throws ServletException, IOException {
-        String busyName = "Sorry, this name is already taken";
-
         when(request.getServletContext()).thenReturn(context);
         when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
         when(request.getParameter(nickNameParam)).thenReturn(testNick);
@@ -76,7 +74,6 @@ class RegisterServletTest {
 
         registerServlet.doPost(request, response);
 
-        verify(request, times(1)).setAttribute("wrongNickName", busyName);
         verify(dispatcher, times(1)).forward(request, response);
         verify(session, never()).setAttribute("player", player);
         verify(session, never()).setAttribute(nickNameParam, testNick);

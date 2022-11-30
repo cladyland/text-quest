@@ -47,6 +47,7 @@ public class LogicFilter implements Filter {
                     .getServletContext()
                     .getRequestDispatcher(START_JSP.toString())
                     .forward(servletRequest, servletResponse);
+            return;
 
         }
 

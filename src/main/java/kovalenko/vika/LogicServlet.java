@@ -66,9 +66,11 @@ public class LogicServlet extends HttpServlet {
                 session.setAttribute("cardID", playerCard.getId());
             } else {
                 if (playerStatus == Status.DEFEAT) {
-                    req.setAttribute("defeat", questService.getDefeatMessage(playerAnswerId));
+                    String defeatMessage = questService.getDefeatMessage(playerAnswerId) + "\nYOU LOSE";
+                    req.setAttribute("defeat", defeatMessage);
                 } else if (playerStatus == Status.VICTORY) {
-                    req.setAttribute("victory", questService.getVictoryMessage());
+                    String winMessage = questService.getVictoryMessage() + "\nYOU WIN";
+                    req.setAttribute("victory", winMessage);
                 }
                 req.setAttribute("statistic", playerService.setAndGetPlayerStatistic(player, playerStatus));
                 session.removeAttribute("cardID");
