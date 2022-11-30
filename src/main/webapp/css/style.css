@@ -4,16 +4,30 @@ body {
     background-color: darkblue;
     opacity: 0.75;
     font-family: "Comic Sans MS", cursive;
+    font-size: large;
 }
 
 h1, h2 {
     text-shadow: 2px 2px 5px darkviolet;
 }
 
+h3 {
+    color: aqua;
+    text-shadow: 10px 2px 5px aliceblue;
+}
+
 div {
-    width: 500px;
-    margin-right:auto;
-    margin-left:auto;
+    width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.start-game {
+    width: 300px;
+    color: aquamarine;
+    text-shadow: 2px 2px 5px deepskyblue;
+    text-align: center;
+    font-size: x-large;
 }
 
 .wrong-name {

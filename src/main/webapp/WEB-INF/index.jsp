@@ -15,8 +15,8 @@
     You are at the spaceport and ready to board your spaceship. <br>
     Isn't that your dream? Become the captain of an intergalactic ship with a crew that will travel through space and
     seek adventure under your command. <br>
-    Let's start!<br>
-    <br><br>
+    Let's start!
+    <br><br><br>
     <h2>Acquaintance with the crew</h2>
     When you boarded the spaceship, you were greeted by a tall girl holding a black folder in her hands.<br>
     - Hello, commander! I'm Jessica, your assistant. Our navigator Bob is drinking coffee there at the computer.
@@ -34,15 +34,5 @@
 <div class="wrong-name" style="width: 450px">
     ${requestScope.get("wrongNickName")}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-        crossorigin="anonymous"></script>
 </body>
 </html>
