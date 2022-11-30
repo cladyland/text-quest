@@ -110,7 +110,6 @@ class LogicServletTest {
         int cardId = 3;
         int answerId = 31;
         var playerStatus = Status.DEFEAT;
-        String defeatMessage = "You lose";
         Map<String, Integer> playerStatistic = new HashMap<>();
 
         when(context.getRequestDispatcher(END_JSP.toString())).thenReturn(dispatcher);
@@ -119,12 +118,10 @@ class LogicServletTest {
         when(request.getParameter("playerAnswerId")).thenReturn("31");
         when(questService.getCurrentCard(cardId)).thenReturn(card);
         when(questService.getPlayerAnswerStatus(cardId, answerId)).thenReturn(Status.DEFEAT);
-        when(questService.getDefeatMessage(answerId)).thenReturn(defeatMessage);
         when(playerService.setAndGetPlayerStatistic(player, playerStatus)).thenReturn(playerStatistic);
 
         logicServlet.doPost(request, response);
 
-        verify(request, times(1)).setAttribute("defeat", defeatMessage);
         verify(request, times(1)).setAttribute("statistic", playerStatistic);
         verify(session, times(1)).removeAttribute("cardID");
         verify(dispatcher, times(1)).forward(request, response);
@@ -135,7 +132,6 @@ class LogicServletTest {
         int cardId = 4;
         int answerId = 42;
         var playerStatus = Status.VICTORY;
-        String victoryMessage = "You win";
         Map<String, Integer> playerStatistic = new HashMap<>();
 
         when(context.getRequestDispatcher(END_JSP.toString())).thenReturn(dispatcher);
@@ -144,12 +140,10 @@ class LogicServletTest {
         when(request.getParameter("playerAnswerId")).thenReturn("42");
         when(questService.getCurrentCard(cardId)).thenReturn(card);
         when(questService.getPlayerAnswerStatus(cardId, answerId)).thenReturn(Status.VICTORY);
-        when(questService.getVictoryMessage()).thenReturn(victoryMessage);
         when(playerService.setAndGetPlayerStatistic(player, playerStatus)).thenReturn(playerStatistic);
 
         logicServlet.doPost(request, response);
 
-        verify(request, times(1)).setAttribute("victory", victoryMessage);
         verify(request, times(1)).setAttribute("statistic", playerStatistic);
         verify(session, times(1)).removeAttribute("cardID");
         verify(dispatcher, times(1)).forward(request, response);
