@@ -65,13 +65,8 @@ public class LogicServlet extends HttpServlet {
                 playerCard = questService.getNextCard(playerCardId);
                 session.setAttribute("cardID", playerCard.getId());
             } else {
-                if (playerStatus == Status.DEFEAT) {
-                    String defeatMessage = questService.getDefeatMessage(playerAnswerId) + "\nYOU LOSE";
-                    req.setAttribute("defeat", defeatMessage);
-                } else if (playerStatus == Status.VICTORY) {
-                    String winMessage = questService.getVictoryMessage() + "\nYOU WIN";
-                    req.setAttribute("victory", winMessage);
-                }
+                setEndgameMessage(playerStatus, playerAnswerId, req);
+
                 req.setAttribute("statistic", playerService.setAndGetPlayerStatistic(player, playerStatus));
                 session.removeAttribute("cardID");
 
@@ -84,6 +79,16 @@ public class LogicServlet extends HttpServlet {
         req.setAttribute("answers", playerCard.getAnswers());
 
         forwardTo(QUEST_JSP, req, resp);
+    }
+
+    private void setEndgameMessage(Status playerStatus, Integer answerId, HttpServletRequest request){
+        if (playerStatus == Status.DEFEAT) {
+            String defeatMessage = questService.getDefeatMessage(answerId) + "\nYOU LOSE";
+            request.setAttribute("defeat", defeatMessage);
+        } else if (playerStatus == Status.VICTORY) {
+            String winMessage = questService.getVictoryMessage() + "\nYOU WIN";
+            request.setAttribute("victory", winMessage);
+        }
     }
 
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

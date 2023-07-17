@@ -1,5 +1,8 @@
 package kovalenko.vika.db;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum PathsJsp {
     INDEX_JSP("/WEB-INF/index.jsp"),
     START_JSP("/WEB-INF/start.jsp"),
@@ -7,10 +10,6 @@ public enum PathsJsp {
     END_JSP("/WEB-INF/end.jsp");
 
     private final String path;
-
-    PathsJsp(String path) {
-        this.path = path;
-    }
 
     @Override
     public String toString() {

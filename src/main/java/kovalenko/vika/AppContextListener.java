@@ -14,6 +14,8 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class AppContextListener implements ServletContextListener {
     private static final Logger LOG = LoggerFactory.getLogger(AppContextListener.class);
+    private final String CARDS_CONFIG = "cards.yml";
+    private final String DEFEAT_CONFIG = "defeats.yml";
 
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
@@ -22,8 +24,8 @@ public class AppContextListener implements ServletContextListener {
         var playerRepository = new PlayerRepository();
         var playerService = new PlayerService(playerRepository);
         var cardsManager = new CardsManager();
-        cardsManager.createCards("cards.yml");
-        cardsManager.createDefeats("defeats.yml");
+        cardsManager.createCards(CARDS_CONFIG);
+        cardsManager.createDefeats(DEFEAT_CONFIG);
 
         var questService = new QuestService(
                 cardsManager.getCards(),
