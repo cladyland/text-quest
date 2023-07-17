@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
 import kovalenko.vika.basis.Player;
 import org.junit.jupiter.api.BeforeEach;

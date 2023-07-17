@@ -1,5 +1,6 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
+import kovalenko.vika.filter.AuthenticationFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

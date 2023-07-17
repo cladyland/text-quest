@@ -1,7 +1,6 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,16 +14,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
+import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
 import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
-@WebFilter(filterName = "AuthenticationFilter", value = "/")
+@Slf4j
+@WebFilter(filterName = "AuthenticationFilter", value = HOME_LINK)
 public class AuthenticationFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationFilter.class);
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.info("'Authentication Filter' is initialized");
+        log.info("'Authentication Filter' is initialized");
     }
 
     @Override
@@ -32,7 +33,7 @@ public class AuthenticationFilter implements Filter {
         var httpRequest = (HttpServletRequest) servletRequest;
         var httpResponse = (HttpServletResponse) servletResponse;
         var currentSession = httpRequest.getSession();
-        var playerNickName = currentSession.getAttribute("nickName");
+        var playerNickName = currentSession.getAttribute(NICK_NAME);
 
         if (currentSession.isNew() || isNull(playerNickName)) {
             httpRequest
@@ -40,13 +41,13 @@ public class AuthenticationFilter implements Filter {
                     .getRequestDispatcher(INDEX_JSP.toString())
                     .forward(servletRequest, servletResponse);
         } else {
-            httpResponse.sendRedirect("/quest");
+            httpResponse.sendRedirect(QUEST_LINK);
         }
     }
 
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'Authentication Filter' is destroyed");
+        log.info("'Authentication Filter' is destroyed");
     }
 }

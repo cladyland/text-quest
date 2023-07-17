@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Player;
@@ -6,8 +6,7 @@ import kovalenko.vika.basis.Status;
 import kovalenko.vika.db.PathsJsp;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,14 +17,24 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
+import static kovalenko.vika.constant.AttributeConstant.ANSWERS;
+import static kovalenko.vika.constant.AttributeConstant.CARD_ID;
+import static kovalenko.vika.constant.AttributeConstant.DEFEAT;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER_ANSWER_ID;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.constant.AttributeConstant.QUESTION;
+import static kovalenko.vika.constant.AttributeConstant.QUEST_SERVICE;
+import static kovalenko.vika.constant.AttributeConstant.STATISTIC;
+import static kovalenko.vika.constant.AttributeConstant.VICTORY;
+import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
 import static kovalenko.vika.db.PathsJsp.END_JSP;
 import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
 import static kovalenko.vika.db.PathsJsp.START_JSP;
 
-@WebServlet(name = "LogicServlet", value = "/quest")
+@Slf4j
+@WebServlet(name = "LogicServlet", value = QUEST_LINK)
 public class LogicServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(LogicServlet.class);
-
     private QuestService questService;
     private PlayerService playerService;
 
@@ -33,17 +42,17 @@ public class LogicServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var servletContext = config.getServletContext();
-        questService = (QuestService) servletContext.getAttribute("questService");
-        playerService = (PlayerService) servletContext.getAttribute("playerService");
+        questService = (QuestService) servletContext.getAttribute(QUEST_SERVICE);
+        playerService = (PlayerService) servletContext.getAttribute(PLAYER_SERVICE);
 
-        LOG.info("'Logic Servlet' is initialized");
+        log.info("'Logic Servlet' is initialized");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
                 .getSession()
-                .removeAttribute("cardID");
+                .removeAttribute(CARD_ID);
 
         forwardTo(START_JSP, req, resp);
     }
@@ -51,9 +60,9 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
-        var player = (Player) session.getAttribute("player");
-        var playerCardId = (Integer) session.getAttribute("cardID");
-        String answerParam = req.getParameter("playerAnswerId");
+        var player = (Player) session.getAttribute(PLAYER);
+        var playerCardId = (Integer) session.getAttribute(CARD_ID);
+        String answerParam = req.getParameter(PLAYER_ANSWER_ID);
 
         Card playerCard = questService.getCurrentCard(playerCardId);
 
@@ -63,20 +72,20 @@ public class LogicServlet extends HttpServlet {
 
             if (playerStatus == Status.NEXT) {
                 playerCard = questService.getNextCard(playerCardId);
-                session.setAttribute("cardID", playerCard.getId());
+                session.setAttribute(CARD_ID, playerCard.getId());
             } else {
                 setEndgameMessage(playerStatus, playerAnswerId, req);
 
-                req.setAttribute("statistic", playerService.setAndGetPlayerStatistic(player, playerStatus));
-                session.removeAttribute("cardID");
+                req.setAttribute(STATISTIC, playerService.setAndGetPlayerStatistic(player, playerStatus));
+                session.removeAttribute(CARD_ID);
 
                 forwardTo(END_JSP, req, resp);
                 return;
             }
         }
 
-        req.setAttribute("question", playerCard.getQuestion().getContext());
-        req.setAttribute("answers", playerCard.getAnswers());
+        req.setAttribute(QUESTION, playerCard.getQuestion().getContext());
+        req.setAttribute(ANSWERS, playerCard.getAnswers());
 
         forwardTo(QUEST_JSP, req, resp);
     }
@@ -84,10 +93,10 @@ public class LogicServlet extends HttpServlet {
     private void setEndgameMessage(Status playerStatus, Integer answerId, HttpServletRequest request){
         if (playerStatus == Status.DEFEAT) {
             String defeatMessage = questService.getDefeatMessage(answerId) + "\nYOU LOSE";
-            request.setAttribute("defeat", defeatMessage);
+            request.setAttribute(DEFEAT, defeatMessage);
         } else if (playerStatus == Status.VICTORY) {
             String winMessage = questService.getVictoryMessage() + "\nYOU WIN";
-            request.setAttribute("victory", winMessage);
+            request.setAttribute(VICTORY, winMessage);
         }
     }
 

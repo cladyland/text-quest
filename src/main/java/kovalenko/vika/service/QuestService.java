@@ -1,24 +1,22 @@
 package kovalenko.vika.service;
 
-import kovalenko.vika.basis.Answer;
+import kovalenko.vika.basis.sentence.Answer;
 import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Defeat;
+import kovalenko.vika.basis.sentence.Defeat;
 import kovalenko.vika.basis.Status;
-import kovalenko.vika.service.exception.QuestDefaultException;
+import kovalenko.vika.exception.QuestDefaultException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
+@Slf4j
 @AllArgsConstructor
 public class QuestService {
-    private static final Logger LOG = LoggerFactory.getLogger(QuestService.class);
-
     private final Answer defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
     private final Defeat defaultDefeat = new Defeat(0, "Defeat");
     @NonNull
@@ -31,11 +29,11 @@ public class QuestService {
     public Status getPlayerAnswerStatus(Integer cardId, Integer answerId) {
         String failGetStatus = "Failed to get player answer status: ";
         if (isNull(cardId)) {
-            LOG.error(failGetStatus + "cardId is null");
+            log.error(failGetStatus + "cardId is null");
             throw new NullPointerException("cardId cannot be null!");
         }
         if (isNull(answerId)) {
-            LOG.error(failGetStatus + "answerId is null");
+            log.error(failGetStatus + "answerId is null");
             throw new NullPointerException("answerId cannot be null!");
         }
 
@@ -47,7 +45,7 @@ public class QuestService {
             String answerNotFound = String
                     .format("Answer with id %d on the card with id %d is not found.", answerId, cardId);
 
-            LOG.error(answerNotFound);
+            log.error(answerNotFound);
             throw new QuestDefaultException(answerNotFound);
         }
         return status;
@@ -95,5 +93,4 @@ public class QuestService {
                 .orElse(defaultDefeat)
                 .getContext();
     }
-
 }

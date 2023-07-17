@@ -1,8 +1,7 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
 import kovalenko.vika.basis.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,16 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
+import static kovalenko.vika.constant.AttributeConstant.CARD_ID;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
 import static kovalenko.vika.db.PathsJsp.START_JSP;
 
-@WebFilter(filterName = "LogicFilter", value = "/quest")
+@Slf4j
+@WebFilter(filterName = "LogicFilter", value = QUEST_LINK)
 public class LogicFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(LogicFilter.class);
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.info("'Logic Filter' is initialized");
+        log.info("'Logic Filter' is initialized");
     }
 
     @Override
@@ -33,10 +35,10 @@ public class LogicFilter implements Filter {
         var httpRequest = (HttpServletRequest) servletRequest;
         var httpResponse = (HttpServletResponse) servletResponse;
         var session = httpRequest.getSession();
-        var player = (Player) session.getAttribute("player");
+        var player = (Player) session.getAttribute(PLAYER);
 
         if (isNull(player)) {
-            httpResponse.sendRedirect("/");
+            httpResponse.sendRedirect(HOME_LINK);
             return;
         }
 
@@ -51,9 +53,9 @@ public class LogicFilter implements Filter {
 
         }
 
-        if (isNull(session.getAttribute("cardID"))) {
+        if (isNull(session.getAttribute(CARD_ID))) {
             Integer startCardId = 1;
-            session.setAttribute("cardID", startCardId);
+            session.setAttribute(CARD_ID, startCardId);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -62,6 +64,6 @@ public class LogicFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'Logic Filter' is destroyed");
+        log.info("'Logic Filter' is destroyed");
     }
 }

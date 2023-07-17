@@ -1,12 +1,13 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
-import kovalenko.vika.basis.Answer;
+import kovalenko.vika.basis.sentence.Answer;
 import kovalenko.vika.basis.Card;
 import kovalenko.vika.basis.Player;
-import kovalenko.vika.basis.Question;
+import kovalenko.vika.basis.sentence.Question;
 import kovalenko.vika.basis.Status;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
+import kovalenko.vika.servlet.LogicServlet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

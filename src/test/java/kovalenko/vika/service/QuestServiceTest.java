@@ -1,11 +1,11 @@
 package kovalenko.vika.service;
 
-import kovalenko.vika.basis.Answer;
+import kovalenko.vika.basis.sentence.Answer;
 import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Defeat;
-import kovalenko.vika.basis.Question;
+import kovalenko.vika.basis.sentence.Defeat;
+import kovalenko.vika.basis.sentence.Question;
 import kovalenko.vika.basis.Status;
-import kovalenko.vika.service.exception.QuestDefaultException;
+import kovalenko.vika.exception.QuestDefaultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

@@ -3,10 +3,9 @@ package kovalenko.vika.db;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Defeat;
+import kovalenko.vika.basis.sentence.Defeat;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,9 +14,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
+@Slf4j
 public class CardsManager {
-    private static final Logger LOG = LoggerFactory.getLogger(CardsManager.class);
-
     @Getter
     private final String VICTORY = "You came back home.";
     private final String CARDS_PARAM = "cards";
@@ -51,7 +49,7 @@ public class CardsManager {
             var message = String
                     .format("Could not find the file or filename has a non-yml extension: '%s'", fileName);
 
-            LOG.error(message);
+            log.error(message);
             throw new IllegalArgumentException(message);
         }
 
@@ -65,15 +63,15 @@ public class CardsManager {
                 });
             } else {
                 String message = param + " is not found, file cannot be deserialized";
-                LOG.error(message);
+                log.error(message);
                 throw new IllegalArgumentException(message);
             }
 
-            LOG.info(String.format("File '%s' deserialized successfully", fileName));
+            log.info(String.format("File '%s' deserialized successfully", fileName));
 
         } catch (IOException ex) {
             var message = String.format("Failed to read file '%s'", fileName);
-            LOG.error(message, ex.getCause());
+            log.error(message, ex.getCause());
             throw new RuntimeException(message, ex);
         }
     }

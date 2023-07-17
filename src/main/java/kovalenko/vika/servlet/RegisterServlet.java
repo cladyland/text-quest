@@ -1,9 +1,8 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.service.PlayerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,21 +12,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.constant.AttributeConstant.WRONG_NICK_NAME;
+import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.constant.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
-@WebServlet(name = "RegisterServlet", value = "/register")
+@Slf4j
+@WebServlet(name = "RegisterServlet", value = REGISTER_LINK)
 public class RegisterServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterServlet.class);
-
     private PlayerService playerService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var servletContext = config.getServletContext();
-        playerService = (PlayerService) servletContext.getAttribute("playerService");
+        playerService = (PlayerService) servletContext.getAttribute(PLAYER_SERVICE);
 
-        LOG.info("'Player Service' is initialized");
+        log.info("'Player Service' is initialized");
     }
 
     @Override
@@ -40,20 +44,20 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String newNickName = req.getParameter("nickName");
+        String newNickName = req.getParameter(NICK_NAME);
         Player newPlayer = playerService.register(newNickName);
 
         if (playerService.isDefaultPlayer(newPlayer)) {
             String busyName = "Sorry, this name is already taken";
-            req.setAttribute("wrongNickName", busyName);
+            req.setAttribute(WRONG_NICK_NAME, busyName);
             doGet(req, resp);
             return;
         }
 
         var session = req.getSession();
-        session.setAttribute("player", newPlayer);
-        session.setAttribute("nickName", newNickName);
+        session.setAttribute(PLAYER, newPlayer);
+        session.setAttribute(NICK_NAME, newNickName);
 
-        resp.sendRedirect("/quest");
+        resp.sendRedirect(QUEST_LINK);
     }
 }

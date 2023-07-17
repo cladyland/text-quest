@@ -1,17 +1,15 @@
 package kovalenko.vika.db;
 
 import kovalenko.vika.basis.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
 
+@Slf4j
 public class PlayerRepository {
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerRepository.class);
-
     private final Map<String, Player> players;
 
     public PlayerRepository() {
@@ -20,13 +18,13 @@ public class PlayerRepository {
 
     public void registerNewPlayer(String nickName) {
         if (isNull(nickName)) {
-            LOG.error("Unable to register user because nickName is null");
+            log.error("Unable to register user because nickName is null");
             throw new NullPointerException("nickName cannot be null!");
         }
         Player player = new Player(nickName);
         players.put(nickName, player);
 
-        LOG.info(String.format("The user '%s' has been registered", nickName));
+        log.info(String.format("The user '%s' has been registered", nickName));
     }
 
     public Map<String, Player> getPlayers() {

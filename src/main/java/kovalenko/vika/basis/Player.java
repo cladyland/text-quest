@@ -1,18 +1,16 @@
 package kovalenko.vika.basis;
 
-import kovalenko.vika.service.exception.PlayerSettingsException;
+import kovalenko.vika.exception.PlayerSettingsException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class Player {
-    private static final Logger LOG = LoggerFactory.getLogger(Player.class);
-
     @NonNull
     @Getter
     private final String nickName;
@@ -27,15 +25,18 @@ public class Player {
     @Getter
     private Integer numberOfDefeats;
 
-    public Player(String nickName) {
-        this.nickName = nickName;
+    {
         newcomer = true;
         numberOfGames = 0;
         numberOfWins = 0;
         numberOfDefeats = 0;
         playerStatistic = new HashMap<>();
+    }
 
-        LOG.debug("New player created: nickName='{}' isNewcomer='{}' games='{}' wins='{}' defeats='{}'",
+    public Player(String nickName) {
+        this.nickName = nickName;
+
+        log.debug("New player created: nickName='{}' isNewcomer='{}' games='{}' wins='{}' defeats='{}'",
                 this.nickName, this.newcomer, this.numberOfGames, this.numberOfWins, this.numberOfDefeats);
     }
 
@@ -45,11 +46,11 @@ public class Player {
     }
 
     public void increaseNumberOfGames(Status status) {
-        if (!isStatusToChangeStatistic(status)){
+        if (!isStatusToChangeStatistic(status)) {
             var exceptionMessage = String
                     .format("Status '%s' does not affect the change of the player's statistics", status);
 
-            LOG.error(exceptionMessage);
+            log.error(exceptionMessage);
             throw new PlayerSettingsException(exceptionMessage);
         }
 
@@ -61,15 +62,15 @@ public class Player {
         }
     }
 
-    private boolean isStatusToChangeStatistic(Status status){
-        return status == Status.VICTORY || status == Status.DEFEAT;
+    private boolean isStatusToChangeStatistic(Status status) {
+        return isVictory(status) || status == Status.DEFEAT;
     }
 
     private boolean isVictory(Status status) {
-        return status.equals(Status.VICTORY);
+        return status == Status.VICTORY;
     }
 
-    private void setPlayerStatistic(){
+    private void setPlayerStatistic() {
         playerStatistic.put("Games", numberOfGames);
         playerStatistic.put("Wins", numberOfWins);
         playerStatistic.put("Defeats", numberOfDefeats);

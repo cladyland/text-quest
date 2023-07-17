@@ -1,15 +1,13 @@
-package kovalenko.vika.basis;
+package kovalenko.vika.basis.sentence;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @NoArgsConstructor
 public abstract class Sentence {
-    private static final Logger LOG = LoggerFactory.getLogger(Sentence.class);
-
     @Getter
     private Integer id;
     @Getter
@@ -17,16 +15,16 @@ public abstract class Sentence {
 
     public Sentence(@NonNull Integer id, @NonNull String context) {
         if (id < 0) {
-            LOG.error("Cannot instantiate the class {}: id less than 0", this.getClass().getSimpleName());
+            log.error("Cannot instantiate the class {}: id less than 0", this.getClass().getSimpleName());
             throw new IllegalArgumentException("ID must be greater than zero!");
         }
         if (context.isBlank()) {
-            LOG.error("Cannot instantiate the class {}: context is blank", this.getClass().getSimpleName());
+            log.error("Cannot instantiate the class {}: context is blank", this.getClass().getSimpleName());
             throw new IllegalArgumentException("Context cannot be blank!");
         }
         this.id = id;
         this.context = context;
 
-        LOG.debug("{} created: id='{}' context='{}'", this.getClass().getSimpleName(), this.id, this.context);
+        log.debug("{} created: id='{}' context='{}'", this.getClass().getSimpleName(), this.id, this.context);
     }
 }

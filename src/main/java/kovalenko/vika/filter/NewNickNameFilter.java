@@ -1,7 +1,6 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,12 +15,15 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.isNull;
+import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.constant.AttributeConstant.WRONG_NICK_NAME;
+import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.constant.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
 
-@WebFilter(filterName = "NewNickNameFilter", value = "/register")
+@Slf4j
+@WebFilter(filterName = "NewNickNameFilter", value = REGISTER_LINK)
 public class NewNickNameFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(NewNickNameFilter.class);
-
     private String wordlessNickName;
     private String underscoreName;
 
@@ -31,26 +33,26 @@ public class NewNickNameFilter implements Filter {
         wordlessNickName = "Nickname can only contain letters, numbers and underscore symbol";
         underscoreName = "Nickname must contain at least one letter or numeric";
 
-        LOG.info("'New Nick Name Filter' is initialized");
+        log.info("'New Nick Name Filter' is initialized");
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String nickName = servletRequest.getParameter("nickName");
+        String nickName = servletRequest.getParameter(NICK_NAME);
 
         if (isNull(nickName)) {
             var httpResponse = (HttpServletResponse) servletResponse;
-            httpResponse.sendRedirect("/");
+            httpResponse.sendRedirect(HOME_LINK);
             return;
         }
 
         if (!isWordCharacter(nickName)) {
-            LOG.warn("Failed to register user '{}': nickname contains invalid characters", nickName);
+            log.warn("Failed to register user '{}': nickname contains invalid characters", nickName);
             forwardWithWrongMessage(servletRequest, servletResponse, wordlessNickName);
             return;
         }
         if (isUnderscore(nickName)) {
-            LOG.warn("Failed to register user '{}': nickname contains only underscore symbol", nickName);
+            log.warn("Failed to register user '{}': nickname contains only underscore symbol", nickName);
             forwardWithWrongMessage(servletRequest, servletResponse, underscoreName);
             return;
         }
@@ -61,7 +63,7 @@ public class NewNickNameFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'New Nick Name Filter' is destroyed");
+        log.info("'New Nick Name Filter' is destroyed");
     }
 
     private boolean isWordCharacter(String word) {
@@ -76,7 +78,7 @@ public class NewNickNameFilter implements Filter {
 
     private void forwardWithWrongMessage(ServletRequest request, ServletResponse response, String message) throws ServletException, IOException {
         var httpRequest = (HttpServletRequest) request;
-        request.setAttribute("wrongNickName", message);
+        request.setAttribute(WRONG_NICK_NAME, message);
 
         httpRequest
                 .getServletContext()

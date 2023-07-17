@@ -4,22 +4,24 @@ import kovalenko.vika.db.CardsManager;
 import kovalenko.vika.db.PlayerRepository;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.constant.AttributeConstant.QUEST_SERVICE;
+import static kovalenko.vika.constant.LinkConstant.CARDS_CONFIG;
+import static kovalenko.vika.constant.LinkConstant.DEFEAT_CONFIG;
+
+@Slf4j
 @WebListener
 public class AppContextListener implements ServletContextListener {
-    private static final Logger LOG = LoggerFactory.getLogger(AppContextListener.class);
-    private final String CARDS_CONFIG = "cards.yml";
-    private final String DEFEAT_CONFIG = "defeats.yml";
 
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
-        LOG.info("'Servlet context' initialization begins...");
+        log.info("'Servlet context' initialization begins...");
 
         var playerRepository = new PlayerRepository();
         var playerService = new PlayerService(playerRepository);
@@ -34,9 +36,9 @@ public class AppContextListener implements ServletContextListener {
 
         var servletContext = contextEvent.getServletContext();
 
-        servletContext.setAttribute("playerService", playerService);
-        servletContext.setAttribute("questService", questService);
+        servletContext.setAttribute(PLAYER_SERVICE, playerService);
+        servletContext.setAttribute(QUEST_SERVICE, questService);
 
-        LOG.info("'Servlet context' initialized successfully");
+        log.info("'Servlet context' initialized successfully");
     }
 }

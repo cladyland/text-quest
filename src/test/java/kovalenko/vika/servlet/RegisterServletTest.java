@@ -1,7 +1,8 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.service.PlayerService;
+import kovalenko.vika.servlet.RegisterServlet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

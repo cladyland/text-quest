@@ -4,16 +4,14 @@ import kovalenko.vika.db.PlayerRepository;
 import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
 import static java.util.Objects.isNull;
 
+@Slf4j
 public class PlayerService {
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerService.class);
-
     private final Player defaultPlayer;
     @NonNull
     private final PlayerRepository playerRepository;
@@ -25,7 +23,7 @@ public class PlayerService {
 
     public Player register(String nickName) {
         if (nickNameIsBusy(nickName) || isNull(nickName)) {
-            LOG.debug("The user '{}' is not registered: nickname is already taken or equals null", nickName);
+            log.debug("The user '{}' is not registered: nickname is already taken or equals null", nickName);
             return defaultPlayer;
         }
 
@@ -39,11 +37,11 @@ public class PlayerService {
         String failStatsChange = "Failed to change player's statistic: ";
 
         if (isNull(player)) {
-            LOG.error(failStatsChange + "player is null");
+            log.error(failStatsChange + "player is null");
             throw new NullPointerException("Player cannot be null!");
         }
         if (isNull(status)) {
-            LOG.error(failStatsChange + "status is null");
+            log.error(failStatsChange + "status is null");
             throw new NullPointerException("Status cannot be null!");
         }
 

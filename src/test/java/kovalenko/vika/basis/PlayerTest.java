@@ -1,6 +1,6 @@
 package kovalenko.vika.basis;
 
-import kovalenko.vika.service.exception.PlayerSettingsException;
+import kovalenko.vika.exception.PlayerSettingsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

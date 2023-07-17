@@ -1,4 +1,4 @@
-package kovalenko.vika.service.exception;
+package kovalenko.vika.exception;
 
 public class PlayerSettingsException extends RuntimeException {
 
