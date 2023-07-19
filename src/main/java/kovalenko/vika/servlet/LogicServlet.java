@@ -1,9 +1,9 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Player;
 import kovalenko.vika.basis.Status;
 import kovalenko.vika.db.PathsJsp;
+import kovalenko.vika.dto.CardDTO;
+import kovalenko.vika.dto.PlayerDTO;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,12 @@ import java.io.IOException;
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.constant.AttributeConstant.ANSWERS;
 import static kovalenko.vika.constant.AttributeConstant.CARD_ID;
-import static kovalenko.vika.constant.AttributeConstant.DEFEAT;
+import static kovalenko.vika.constant.AttributeConstant.END;
 import static kovalenko.vika.constant.AttributeConstant.PLAYER;
 import static kovalenko.vika.constant.AttributeConstant.PLAYER_ANSWER_ID;
 import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
 import static kovalenko.vika.constant.AttributeConstant.QUESTION;
 import static kovalenko.vika.constant.AttributeConstant.QUEST_SERVICE;
-import static kovalenko.vika.constant.AttributeConstant.STATISTIC;
-import static kovalenko.vika.constant.AttributeConstant.VICTORY;
 import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
 import static kovalenko.vika.db.PathsJsp.END_JSP;
 import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
@@ -60,11 +58,11 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
-        var player = (Player) session.getAttribute(PLAYER);
+        var player = (PlayerDTO) session.getAttribute(PLAYER);
         var playerCardId = (Integer) session.getAttribute(CARD_ID);
         String answerParam = req.getParameter(PLAYER_ANSWER_ID);
 
-        Card playerCard = questService.getCurrentCard(playerCardId);
+        CardDTO playerCard = questService.getCurrentCard(playerCardId);
 
         if (nonNull(answerParam)) {
             int playerAnswerId = Integer.parseInt(answerParam);
@@ -76,7 +74,7 @@ public class LogicServlet extends HttpServlet {
             } else {
                 setEndgameMessage(playerStatus, playerAnswerId, req);
 
-                req.setAttribute(STATISTIC, playerService.setAndGetPlayerStatistic(player, playerStatus));
+                session.setAttribute(PLAYER, playerService.updatePlayerStatistic(player.getNickName(), playerStatus));
                 session.removeAttribute(CARD_ID);
 
                 forwardTo(END_JSP, req, resp);
@@ -90,14 +88,14 @@ public class LogicServlet extends HttpServlet {
         forwardTo(QUEST_JSP, req, resp);
     }
 
-    private void setEndgameMessage(Status playerStatus, Integer answerId, HttpServletRequest request){
+    private void setEndgameMessage(Status playerStatus, Integer answerId, HttpServletRequest request) {
+        String endMessage = "";
         if (playerStatus == Status.DEFEAT) {
-            String defeatMessage = questService.getDefeatMessage(answerId) + "\nYOU LOSE";
-            request.setAttribute(DEFEAT, defeatMessage);
+            endMessage = questService.getDefeatMessage(answerId) + "\nYOU LOSE";
         } else if (playerStatus == Status.VICTORY) {
-            String winMessage = questService.getVictoryMessage() + "\nYOU WIN";
-            request.setAttribute(VICTORY, winMessage);
+            endMessage = questService.getVictoryMessage() + "\nYOU WIN";
         }
+        request.setAttribute(END, endMessage);
     }
 
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

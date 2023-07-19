@@ -3,7 +3,6 @@ package kovalenko.vika.basis;
 import kovalenko.vika.exception.PlayerSettingsException;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -11,22 +10,15 @@ import java.util.Map;
 
 @Slf4j
 public class Player {
-    @NonNull
     @Getter
+    @NonNull
     private final String nickName;
     private final Map<String, Integer> playerStatistic;
-    @Getter
-    @Setter
-    private boolean newcomer;
-    @Getter
     private Integer numberOfGames;
-    @Getter
     private Integer numberOfWins;
-    @Getter
     private Integer numberOfDefeats;
 
     {
-        newcomer = true;
         numberOfGames = 0;
         numberOfWins = 0;
         numberOfDefeats = 0;
@@ -36,8 +28,8 @@ public class Player {
     public Player(String nickName) {
         this.nickName = nickName;
 
-        log.debug("New player created: nickName='{}' isNewcomer='{}' games='{}' wins='{}' defeats='{}'",
-                this.nickName, this.newcomer, this.numberOfGames, this.numberOfWins, this.numberOfDefeats);
+        log.debug("New player created: nickName='{}' games='{}' wins='{}' defeats='{}'",
+                this.nickName, this.numberOfGames, this.numberOfWins, this.numberOfDefeats);
     }
 
     public Map<String, Integer> getPlayerStatistic() {

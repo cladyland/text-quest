@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.constant.AttributeConstant.PLAYER;
 import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
 import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
 import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
@@ -29,19 +29,17 @@ public class AuthenticationFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
-        var httpRequest = (HttpServletRequest) servletRequest;
-        var httpResponse = (HttpServletResponse) servletResponse;
-        var currentSession = httpRequest.getSession();
-        var playerNickName = currentSession.getAttribute(NICK_NAME);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
+        var currentSession = ((HttpServletRequest) request).getSession();
+        var player = currentSession.getAttribute(PLAYER);
 
-        if (currentSession.isNew() || isNull(playerNickName)) {
-            httpRequest
+        if (currentSession.isNew() || isNull(player)) {
+            request
                     .getServletContext()
                     .getRequestDispatcher(INDEX_JSP.toString())
-                    .forward(servletRequest, servletResponse);
+                    .forward(request, response);
         } else {
-            httpResponse.sendRedirect(QUEST_LINK);
+            ((HttpServletResponse) response).sendRedirect(QUEST_LINK);
         }
     }
 

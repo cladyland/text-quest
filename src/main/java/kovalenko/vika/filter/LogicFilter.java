@@ -1,6 +1,5 @@
 package kovalenko.vika.filter;
 
-import kovalenko.vika.basis.Player;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
@@ -19,7 +18,6 @@ import static kovalenko.vika.constant.AttributeConstant.CARD_ID;
 import static kovalenko.vika.constant.AttributeConstant.PLAYER;
 import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
 import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
-import static kovalenko.vika.db.PathsJsp.START_JSP;
 
 @Slf4j
 @WebFilter(filterName = "LogicFilter", value = QUEST_LINK)
@@ -31,26 +29,13 @@ public class LogicFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        var httpRequest = (HttpServletRequest) servletRequest;
-        var httpResponse = (HttpServletResponse) servletResponse;
-        var session = httpRequest.getSession();
-        var player = (Player) session.getAttribute(PLAYER);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        var session = ((HttpServletRequest) request).getSession();
+        var player = session.getAttribute(PLAYER);
 
         if (isNull(player)) {
-            httpResponse.sendRedirect(HOME_LINK);
+            ((HttpServletResponse) response).sendRedirect(HOME_LINK);
             return;
-        }
-
-        if (player.isNewcomer()) {
-            player.setNewcomer(false);
-
-            httpRequest
-                    .getServletContext()
-                    .getRequestDispatcher(START_JSP.toString())
-                    .forward(servletRequest, servletResponse);
-            return;
-
         }
 
         if (isNull(session.getAttribute(CARD_ID))) {
@@ -58,7 +43,7 @@ public class LogicFilter implements Filter {
             session.setAttribute(CARD_ID, startCardId);
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        chain.doFilter(request, response);
     }
 
     @Override

@@ -10,7 +10,7 @@
 <body>
 <div class="start-game">
     <div class="position-absolute top-50 start-50 translate-middle">
-        <h3>Hello, ${sessionScope.get("nickName")}</h3>
+        <h3>Hello, ${sessionScope.player.getNickName()}</h3>
         <br>
         Are you ready to start your adventure?
         <br><br>

@@ -17,13 +17,12 @@
         <div class="card-body">
             <h5 class="card-title">
                 <div class="end-message">
-                    ${requestScope.get("defeat")}
-                    ${requestScope.get("victory")}
+                    ${requestScope.get("theEnd")}
                 </div>
             </h5>
             <br>
             <div style="color: orange">
-                <c:forEach items="${statistic}" var="stat">
+                <c:forEach items="${sessionScope.player.getPlayerStatistic()}" var="stat">
                     <li>
                             ${stat.getKey()} : ${stat.getValue()}
                     </li>

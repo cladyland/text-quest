@@ -1,9 +1,13 @@
 package kovalenko.vika;
 
 import kovalenko.vika.db.CardsManager;
+import kovalenko.vika.db.imp.CardsManagerImp;
 import kovalenko.vika.db.PlayerRepository;
+import kovalenko.vika.db.imp.PlayerRepositoryImp;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
+import kovalenko.vika.service.imp.PlayerServiceImp;
+import kovalenko.vika.service.imp.QuestServiceImp;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletContextEvent;
@@ -23,16 +27,17 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent contextEvent) {
         log.info("'Servlet context' initialization begins...");
 
-        var playerRepository = new PlayerRepository();
-        var playerService = new PlayerService(playerRepository);
-        var cardsManager = new CardsManager();
+        PlayerRepository playerRepository = new PlayerRepositoryImp();
+        PlayerService playerService = new PlayerServiceImp(playerRepository);
+
+        CardsManager cardsManager = new CardsManagerImp();
         cardsManager.createCards(CARDS_CONFIG);
         cardsManager.createDefeats(DEFEAT_CONFIG);
 
-        var questService = new QuestService(
+        QuestService questService = new QuestServiceImp(
                 cardsManager.getCards(),
                 cardsManager.getDefeats(),
-                cardsManager.getVICTORY());
+                cardsManager.getVictory());
 
         var servletContext = contextEvent.getServletContext();
 

@@ -37,27 +37,27 @@ public class NewNickNameFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String nickName = servletRequest.getParameter(NICK_NAME);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String nickName = request.getParameter(NICK_NAME);
 
         if (isNull(nickName)) {
-            var httpResponse = (HttpServletResponse) servletResponse;
+            var httpResponse = (HttpServletResponse) response;
             httpResponse.sendRedirect(HOME_LINK);
             return;
         }
 
         if (!isWordCharacter(nickName)) {
             log.warn("Failed to register user '{}': nickname contains invalid characters", nickName);
-            forwardWithWrongMessage(servletRequest, servletResponse, wordlessNickName);
+            forwardWithWrongMessage(request, response, wordlessNickName);
             return;
         }
         if (isUnderscore(nickName)) {
             log.warn("Failed to register user '{}': nickname contains only underscore symbol", nickName);
-            forwardWithWrongMessage(servletRequest, servletResponse, underscoreName);
+            forwardWithWrongMessage(request, response, underscoreName);
             return;
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        chain.doFilter(request, response);
     }
 
     @Override
