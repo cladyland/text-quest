@@ -1,12 +1,12 @@
 package kovalenko.vika.service.imp;
 
-import kovalenko.vika.basis.sentence.Answer;
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.sentence.Defeat;
-import kovalenko.vika.basis.Status;
-import kovalenko.vika.dto.CardDTO;
-import kovalenko.vika.exception.QuestDefaultException;
-import kovalenko.vika.mapper.CardMapper;
+import kovalenko.vika.common.entities.sentence.Answer;
+import kovalenko.vika.common.entities.Card;
+import kovalenko.vika.common.entities.sentence.Defeat;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.dto.CardDTO;
+import kovalenko.vika.common.exception.QuestDefaultException;
+import kovalenko.vika.common.mapper.CardMapper;
 import kovalenko.vika.service.QuestService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

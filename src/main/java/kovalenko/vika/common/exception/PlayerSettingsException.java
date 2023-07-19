@@ -1,4 +1,4 @@
-package kovalenko.vika.exception;
+package kovalenko.vika.common.exception;
 
 public class PlayerSettingsException extends RuntimeException {
 

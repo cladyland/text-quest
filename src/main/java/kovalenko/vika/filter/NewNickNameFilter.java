@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
-import static kovalenko.vika.constant.AttributeConstant.WRONG_NICK_NAME;
-import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
-import static kovalenko.vika.constant.LinkConstant.REGISTER_LINK;
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.common.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.common.constant.AttributeConstant.WRONG_NICK_NAME;
+import static kovalenko.vika.common.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.common.constant.LinkConstant.REGISTER_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
 
 @Slf4j
 @WebFilter(filterName = "NewNickNameFilter", value = REGISTER_LINK)

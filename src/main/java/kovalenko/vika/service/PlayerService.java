@@ -1,7 +1,7 @@
 package kovalenko.vika.service;
 
-import kovalenko.vika.basis.Status;
-import kovalenko.vika.dto.PlayerDTO;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.dto.PlayerDTO;
 
 public interface PlayerService {
     PlayerDTO register(String nickName);

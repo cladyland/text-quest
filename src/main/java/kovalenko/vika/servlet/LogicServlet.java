@@ -1,9 +1,9 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.basis.Status;
-import kovalenko.vika.db.PathsJsp;
-import kovalenko.vika.dto.CardDTO;
-import kovalenko.vika.dto.PlayerDTO;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.constant.PathsJsp;
+import kovalenko.vika.common.dto.CardDTO;
+import kovalenko.vika.common.dto.PlayerDTO;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +17,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.constant.AttributeConstant.ANSWERS;
-import static kovalenko.vika.constant.AttributeConstant.CARD_ID;
-import static kovalenko.vika.constant.AttributeConstant.END;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER_ANSWER_ID;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
-import static kovalenko.vika.constant.AttributeConstant.QUESTION;
-import static kovalenko.vika.constant.AttributeConstant.QUEST_SERVICE;
-import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
-import static kovalenko.vika.db.PathsJsp.END_JSP;
-import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
-import static kovalenko.vika.db.PathsJsp.START_JSP;
+import static kovalenko.vika.common.constant.AttributeConstant.ANSWERS;
+import static kovalenko.vika.common.constant.AttributeConstant.CARD_ID;
+import static kovalenko.vika.common.constant.AttributeConstant.END;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_ANSWER_ID;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.common.constant.AttributeConstant.QUESTION;
+import static kovalenko.vika.common.constant.AttributeConstant.QUEST_SERVICE;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.END_JSP;
+import static kovalenko.vika.common.constant.PathsJsp.QUEST_JSP;
+import static kovalenko.vika.common.constant.PathsJsp.START_JSP;
 
 @Slf4j
 @WebServlet(name = "LogicServlet", value = QUEST_LINK)

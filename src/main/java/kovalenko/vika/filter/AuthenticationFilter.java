@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER;
-import static kovalenko.vika.constant.LinkConstant.HOME_LINK;
-import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
 
 @Slf4j
 @WebFilter(filterName = "AuthenticationFilter", value = HOME_LINK)

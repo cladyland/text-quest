@@ -2,8 +2,8 @@ package kovalenko.vika.db.imp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.sentence.Defeat;
+import kovalenko.vika.common.entities.Card;
+import kovalenko.vika.common.entities.sentence.Defeat;
 import kovalenko.vika.db.CardsManager;
 import lombok.extern.slf4j.Slf4j;
 

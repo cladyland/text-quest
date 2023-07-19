@@ -1,7 +1,7 @@
-package kovalenko.vika.mapper;
+package kovalenko.vika.common.mapper;
 
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.dto.CardDTO;
+import kovalenko.vika.common.entities.Card;
+import kovalenko.vika.common.dto.CardDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

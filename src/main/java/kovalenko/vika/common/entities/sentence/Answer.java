@@ -1,6 +1,6 @@
-package kovalenko.vika.basis.sentence;
+package kovalenko.vika.common.entities.sentence;
 
-import kovalenko.vika.basis.Status;
+import kovalenko.vika.common.constant.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

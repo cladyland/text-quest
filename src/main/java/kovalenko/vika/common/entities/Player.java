@@ -1,6 +1,7 @@
-package kovalenko.vika.basis;
+package kovalenko.vika.common.entities;
 
-import kovalenko.vika.exception.PlayerSettingsException;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.exception.PlayerSettingsException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

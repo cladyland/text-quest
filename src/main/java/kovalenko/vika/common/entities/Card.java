@@ -1,7 +1,7 @@
-package kovalenko.vika.basis;
+package kovalenko.vika.common.entities;
 
-import kovalenko.vika.basis.sentence.Answer;
-import kovalenko.vika.basis.sentence.Question;
+import kovalenko.vika.common.entities.sentence.Answer;
+import kovalenko.vika.common.entities.sentence.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

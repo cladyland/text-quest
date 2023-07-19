@@ -1,7 +1,7 @@
 package kovalenko.vika.db.imp;
 
-import kovalenko.vika.basis.Player;
-import kovalenko.vika.basis.Status;
+import kovalenko.vika.common.entities.Player;
+import kovalenko.vika.common.constant.Status;
 import kovalenko.vika.db.PlayerRepository;
 import lombok.extern.slf4j.Slf4j;
 

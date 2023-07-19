@@ -1,4 +1,4 @@
-package kovalenko.vika.basis;
+package kovalenko.vika.common.constant;
 
 public enum Status {
     NEXT,

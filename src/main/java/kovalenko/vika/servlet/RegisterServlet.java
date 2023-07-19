@@ -1,6 +1,6 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.dto.PlayerDTO;
+import kovalenko.vika.common.dto.PlayerDTO;
 import kovalenko.vika.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.constant.AttributeConstant.NICK_NAME;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER;
-import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
-import static kovalenko.vika.constant.AttributeConstant.WRONG_NICK_NAME;
-import static kovalenko.vika.constant.LinkConstant.QUEST_LINK;
-import static kovalenko.vika.constant.LinkConstant.REGISTER_LINK;
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
+import static kovalenko.vika.common.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.common.constant.AttributeConstant.WRONG_NICK_NAME;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.LinkConstant.REGISTER_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
 
 @Slf4j
 @WebServlet(name = "RegisterServlet", value = REGISTER_LINK)

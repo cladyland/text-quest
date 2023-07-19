@@ -1,7 +1,7 @@
 package kovalenko.vika.db;
 
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.sentence.Defeat;
+import kovalenko.vika.common.entities.Card;
+import kovalenko.vika.common.entities.sentence.Defeat;
 
 import java.util.List;
 

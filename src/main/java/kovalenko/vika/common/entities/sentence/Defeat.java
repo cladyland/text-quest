@@ -1,4 +1,4 @@
-package kovalenko.vika.basis.sentence;
+package kovalenko.vika.common.entities.sentence;
 
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,7 @@
 package kovalenko.vika.service;
 
-import kovalenko.vika.basis.Status;
-import kovalenko.vika.dto.CardDTO;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.dto.CardDTO;
 
 public interface QuestService {
     Status getPlayerAnswerStatus(Integer cardId, Integer answerId);

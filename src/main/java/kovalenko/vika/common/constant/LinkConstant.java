@@ -1,4 +1,4 @@
-package kovalenko.vika.constant;
+package kovalenko.vika.common.constant;
 
 public class LinkConstant {
     public static final String HOME_LINK = "/";

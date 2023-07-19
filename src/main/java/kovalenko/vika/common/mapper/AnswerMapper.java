@@ -1,7 +1,7 @@
-package kovalenko.vika.mapper;
+package kovalenko.vika.common.mapper;
 
-import kovalenko.vika.basis.sentence.Answer;
-import kovalenko.vika.dto.AnswerDTO;
+import kovalenko.vika.common.entities.sentence.Answer;
+import kovalenko.vika.common.dto.AnswerDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

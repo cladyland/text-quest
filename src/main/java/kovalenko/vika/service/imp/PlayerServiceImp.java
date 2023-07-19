@@ -1,9 +1,9 @@
 package kovalenko.vika.service.imp;
 
 import kovalenko.vika.db.PlayerRepository;
-import kovalenko.vika.basis.Status;
-import kovalenko.vika.dto.PlayerDTO;
-import kovalenko.vika.mapper.PlayerMapper;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.dto.PlayerDTO;
+import kovalenko.vika.common.mapper.PlayerMapper;
 import kovalenko.vika.service.PlayerService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

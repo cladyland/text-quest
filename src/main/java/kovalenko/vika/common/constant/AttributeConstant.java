@@ -1,4 +1,4 @@
-package kovalenko.vika.constant;
+package kovalenko.vika.common.constant;
 
 public class AttributeConstant {
     public static final String PLAYER_SERVICE = "playerService";

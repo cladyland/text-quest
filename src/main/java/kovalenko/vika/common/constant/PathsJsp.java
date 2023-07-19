@@ -1,4 +1,4 @@
-package kovalenko.vika.db;
+package kovalenko.vika.common.constant;
 
 import lombok.AllArgsConstructor;
 

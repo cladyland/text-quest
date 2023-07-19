@@ -14,10 +14,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import static kovalenko.vika.constant.AttributeConstant.PLAYER_SERVICE;
-import static kovalenko.vika.constant.AttributeConstant.QUEST_SERVICE;
-import static kovalenko.vika.constant.LinkConstant.CARDS_CONFIG;
-import static kovalenko.vika.constant.LinkConstant.DEFEAT_CONFIG;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.common.constant.AttributeConstant.QUEST_SERVICE;
+import static kovalenko.vika.common.constant.LinkConstant.CARDS_CONFIG;
+import static kovalenko.vika.common.constant.LinkConstant.DEFEAT_CONFIG;
 
 @Slf4j
 @WebListener

@@ -1,7 +1,7 @@
 package kovalenko.vika.db;
 
-import kovalenko.vika.basis.Player;
-import kovalenko.vika.basis.Status;
+import kovalenko.vika.common.entities.Player;
+import kovalenko.vika.common.constant.Status;
 
 public interface PlayerRepository {
     Player registerNewPlayer(String nickName);

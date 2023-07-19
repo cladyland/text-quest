@@ -1,4 +1,4 @@
-package kovalenko.vika.dto;
+package kovalenko.vika.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
