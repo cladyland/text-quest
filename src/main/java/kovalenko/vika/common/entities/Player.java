@@ -14,38 +14,25 @@ public class Player {
     @Getter
     @NonNull
     private final String nickName;
+    @Getter
     private final Map<String, Integer> playerStatistic;
-    private Integer numberOfGames;
-    private Integer numberOfWins;
-    private Integer numberOfDefeats;
+    private int numberOfGames;
+    private int numberOfWins;
+    private int numberOfDefeats;
 
     {
-        numberOfGames = 0;
-        numberOfWins = 0;
-        numberOfDefeats = 0;
         playerStatistic = new HashMap<>();
     }
 
     public Player(String nickName) {
         this.nickName = nickName;
 
-        log.debug("New player created: nickName='{}' games='{}' wins='{}' defeats='{}'",
-                this.nickName, this.numberOfGames, this.numberOfWins, this.numberOfDefeats);
-    }
-
-    public Map<String, Integer> getPlayerStatistic() {
-        setPlayerStatistic();
-        return playerStatistic;
+        log.debug("New player created: nickName='{}'; statistic: '{}'; games='{}', wins='{}', defeats='{}'",
+                this.nickName, this.playerStatistic, this.numberOfGames, this.numberOfWins, this.numberOfDefeats);
     }
 
     public void increaseNumberOfGames(Status status) {
-        if (!isStatusToChangeStatistic(status)) {
-            var exceptionMessage = String
-                    .format("Status '%s' does not affect the change of the player's statistics", status);
-
-            log.error(exceptionMessage);
-            throw new PlayerSettingsException(exceptionMessage);
-        }
+        checkIfStatusToChangeStatistic(status);
 
         numberOfGames++;
         if (isVictory(status)) {
@@ -53,17 +40,28 @@ public class Player {
         } else {
             numberOfDefeats++;
         }
+        updatePlayerStatistic();
+
+        log.debug("'{}' statistic updated: '{}'", this.nickName, this.playerStatistic);
     }
 
-    private boolean isStatusToChangeStatistic(Status status) {
-        return isVictory(status) || status == Status.DEFEAT;
+    private void checkIfStatusToChangeStatistic(Status status) {
+        boolean toChange = isVictory(status) || status == Status.DEFEAT;
+
+        if (!toChange) {
+            var exceptionMessage = String
+                    .format("Status '%s' does not affect the change of the player's statistics", status);
+
+            log.error(exceptionMessage);
+            throw new PlayerSettingsException(exceptionMessage);
+        }
     }
 
     private boolean isVictory(Status status) {
         return status == Status.VICTORY;
     }
 
-    private void setPlayerStatistic() {
+    private void updatePlayerStatistic() {
         playerStatistic.put("Games", numberOfGames);
         playerStatistic.put("Wins", numberOfWins);
         playerStatistic.put("Defeats", numberOfDefeats);

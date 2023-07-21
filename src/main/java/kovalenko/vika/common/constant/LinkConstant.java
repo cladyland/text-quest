@@ -8,5 +8,6 @@ public class LinkConstant {
     public static final String CARDS_CONFIG = "cards.yml";
     public static final String DEFEAT_CONFIG = "defeats.yml";
 
-    private LinkConstant(){}
+    private LinkConstant() {
+    }
 }
