@@ -14,6 +14,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import static kovalenko.vika.common.constant.AttributeConstant.CARDS_PARAM;
+import static kovalenko.vika.common.constant.AttributeConstant.DEFEATS_PARAM;
 import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
 import static kovalenko.vika.common.constant.AttributeConstant.QUEST_SERVICE;
 import static kovalenko.vika.common.constant.LinkConstant.CARDS_CONFIG;
@@ -30,9 +32,10 @@ public class AppContextListener implements ServletContextListener {
         PlayerRepository playerRepository = new PlayerRepositoryImp();
         PlayerService playerService = new PlayerServiceImp(playerRepository);
 
-        CardsManager cardsManager = new CardsManagerImp();
-        cardsManager.createCards(CARDS_CONFIG);
-        cardsManager.createDefeats(DEFEAT_CONFIG);
+        CardsManager cardsManager = new CardsManagerImp() {{
+            createResource(CARDS_CONFIG, CARDS_PARAM);
+            createResource(DEFEAT_CONFIG, DEFEATS_PARAM);
+        }};
 
         QuestService questService = new QuestServiceImp(
                 cardsManager.getCards(),

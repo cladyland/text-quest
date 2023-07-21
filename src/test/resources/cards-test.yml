@@ -1,0 +1,34 @@
+---
+- id: 1
+  question:
+    id: 1
+    context: "question 1"
+  answers:
+  - id: 11
+    context: "answer 1.1"
+    status: NEXT
+  - id: 12
+    context: "answer 1.2"
+    status: DEFEAT
+- id: 2
+  question:
+    id: 2
+    context: "question 2"
+  answers:
+  - id: 21
+    context: "answer 2.1"
+    status: NEXT
+  - id: 22
+    context: "answer 2.2"
+    status: DEFEAT
+- id: 3
+  question:
+    id: 3
+    context: "question 3"
+  answers:
+  - id: 31
+    context: "answer 3.1"
+    status: VICTORY
+  - id: 32
+    context: "answer 3.2"
+    status: DEFEAT

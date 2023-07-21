@@ -6,9 +6,7 @@ import kovalenko.vika.common.entities.sentence.Defeat;
 import java.util.List;
 
 public interface CardsManager {
-    void createCards(String fileName);
-
-    void createDefeats(String fileName);
+    void createResource(String fileName, String param);
 
     List<Card> getCards();
 
