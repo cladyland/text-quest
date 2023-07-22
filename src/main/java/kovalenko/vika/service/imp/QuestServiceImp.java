@@ -7,45 +7,37 @@ import kovalenko.vika.common.constant.Status;
 import kovalenko.vika.common.dto.CardDTO;
 import kovalenko.vika.common.exception.QuestDefaultException;
 import kovalenko.vika.common.mapper.CardMapper;
+import kovalenko.vika.db.CardsManager;
 import kovalenko.vika.service.QuestService;
+import kovalenko.vika.util.AppUtil;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.Objects;
-
-import static java.util.Objects.isNull;
-
 @Slf4j
 @AllArgsConstructor
 public class QuestServiceImp implements QuestService {
-    private final Answer defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
-    private final Defeat defaultDefeat = new Defeat(0, "Defeat");
     private final CardMapper cardMapper = CardMapper.INSTANCE;
     @NonNull
-    private List<Card> cardList;
-    @NonNull
-    private List<Defeat> defeatList;
-    @NonNull
-    private String victoryMessage;
+    private final CardsManager cardsManager;
 
     @Override
     public Status getPlayerAnswerStatus(Integer cardId, Integer answerId) {
-        String failGetStatus = "Failed to get player answer status: ";
-        if (isNull(cardId)) {
-            log.error(failGetStatus + "cardId is null");
-            throw new NullPointerException("cardId cannot be null!");
-        }
-        if (isNull(answerId)) {
-            log.error(failGetStatus + "answerId is null");
-            throw new NullPointerException("answerId cannot be null!");
-        }
+        String failGetStatus = "Failed to get player answer status because is null: ";
+
+        AppUtil.ifNullAddLogAndThrowException(cardId, "cardId", log, failGetStatus + "cardId");
+        AppUtil.ifNullAddLogAndThrowException(answerId, "answerId", log, failGetStatus + "answerId");
 
         Card playerCard = getCard(cardId);
         Answer playerAnswer = getAnswer(playerCard, answerId);
         Status status = playerAnswer.getStatus();
 
+        checkIfNotDefaultStatus(status, cardId, answerId);
+
+        return status;
+    }
+
+    private void checkIfNotDefaultStatus(Status status, Integer cardId, Integer answerId) {
         if (status == Status.DEFAULT) {
             String answerNotFound = String
                     .format("Answer with id %d on the card with id %d is not found.", answerId, cardId);
@@ -53,7 +45,6 @@ public class QuestServiceImp implements QuestService {
             log.error(answerNotFound);
             throw new QuestDefaultException(answerNotFound);
         }
-        return status;
     }
 
     @Override
@@ -74,30 +65,34 @@ public class QuestServiceImp implements QuestService {
 
     @Override
     public String getVictoryMessage() {
-        return victoryMessage;
+        return cardsManager.getVictory();
     }
 
     private Card getCard(int cardId) {
-        return cardList
+        return cardsManager.getCards()
                 .stream()
                 .filter(card -> card.getId() == cardId)
                 .findAny()
-                .orElse(cardList.get(0));
+                .orElse(cardsManager.getCards().get(0));
     }
 
-    private Answer getAnswer(Card card, Integer answerId) {
+    private Answer getAnswer(Card card, int answerId) {
+        var defaultAnswer = new Answer(0, "Default", Status.DEFAULT);
+
         return card
                 .getAnswers()
                 .stream()
-                .filter(answer -> Objects.equals(answer.getId(), answerId))
+                .filter(answer -> answer.getId() == answerId)
                 .findAny()
                 .orElse(defaultAnswer);
     }
 
     private String defeatMessage(int answerId) {
-        return defeatList
+        var defaultDefeat = new Defeat(0, "Defeat");
+
+        return cardsManager.getDefeats()
                 .stream()
-                .filter(defeat -> Objects.equals(defeat.getId(), answerId))
+                .filter(defeat -> defeat.getId() == answerId)
                 .findAny()
                 .orElse(defaultDefeat)
                 .getContext();

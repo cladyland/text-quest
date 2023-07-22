@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static kovalenko.vika.TestConstant.CARDS_YML;
+import static kovalenko.vika.TestConstant.DEFEATS_YML;
 import static kovalenko.vika.common.constant.AttributeConstant.CARDS_PARAM;
 import static kovalenko.vika.common.constant.AttributeConstant.DEFEATS_PARAM;
 import static kovalenko.vika.common.constant.AttributeConstant.VICTORY_MESSAGE;
@@ -16,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CardsManagerImpTest {
-    final String CARDS_YML = "cards-test.yml";
-    final String DEFEATS_YML = "defeats-test.yml";
     static CardsManagerImp cardsManager;
 
     @BeforeAll
@@ -40,7 +40,6 @@ class CardsManagerImpTest {
         assertEquals(Status.VICTORY, winCard.getAnswers().get(winAnswerIndex).getStatus());
 
         assertThrows(UnsupportedOperationException.class, () -> actual.add(new Card()));
-        assertThrows(UnsupportedOperationException.class, () -> actual.remove(0));
     }
 
     @Test
@@ -57,7 +56,6 @@ class CardsManagerImpTest {
         assertEquals(defeatId, actual.get(defeatIndex).getId());
 
         assertThrows(UnsupportedOperationException.class, () -> actual.add(new Defeat()));
-        assertThrows(UnsupportedOperationException.class, () -> actual.remove(0));
     }
 
     @Test

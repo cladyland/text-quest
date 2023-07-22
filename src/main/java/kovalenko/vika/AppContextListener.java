@@ -37,10 +37,7 @@ public class AppContextListener implements ServletContextListener {
             createResource(DEFEAT_CONFIG, DEFEATS_PARAM);
         }};
 
-        QuestService questService = new QuestServiceImp(
-                cardsManager.getCards(),
-                cardsManager.getDefeats(),
-                cardsManager.getVictory());
+        QuestService questService = new QuestServiceImp(cardsManager);
 
         var servletContext = contextEvent.getServletContext();
 

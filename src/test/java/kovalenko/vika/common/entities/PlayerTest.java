@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kovalenko.vika.TestConstant.EMPTY_MAP;
 import static kovalenko.vika.common.constant.Status.DEFEAT;
 import static kovalenko.vika.common.constant.Status.VICTORY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlayerTest {
-    final String nickName = "default";
+    final String NICKNAME = "default";
     Player player;
 
     @BeforeEach
     void init() {
-        player = new Player(nickName);
+        player = new Player(NICKNAME);
     }
 
     @Test
@@ -28,14 +29,14 @@ public class PlayerTest {
         String nickName2 = "test";
         var player2 = new Player(nickName2);
 
-        assertEquals(nickName, player.getNickName());
+        assertEquals(NICKNAME, player.getNickName());
         assertEquals(nickName2, player2.getNickName());
     }
 
     @Test
     void empty_statistic_after_player_created() {
         assertNotNull(getStatistic());
-        assertEquals(new HashMap<>(), getStatistic());
+        assertEquals(EMPTY_MAP, getStatistic());
     }
 
     @Test
@@ -59,13 +60,12 @@ public class PlayerTest {
 
     @Test
     void not_change_statistic_when_inappropriate_status() {
-        var expected = new HashMap<>();
         var exceptionClass = PlayerSettingsException.class;
 
         assertThrows(exceptionClass, () -> player.increaseNumberOfGames(Status.NEXT));
         assertThrows(exceptionClass, () -> player.increaseNumberOfGames(null));
 
-        assertEquals(expected, getStatistic());
+        assertEquals(EMPTY_MAP, getStatistic());
     }
 
     @Test
@@ -82,13 +82,12 @@ public class PlayerTest {
     @Test
     void each_player_has_own_statistic() {
         var player2 = new Player("player2");
-        var expected = new HashMap<>();
         Map<String, Integer> expected2 = expectedStatistic(2, 1, 1);
 
         player2.increaseNumberOfGames(VICTORY);
         player2.increaseNumberOfGames(DEFEAT);
 
-        assertEquals(expected, getStatistic());
+        assertEquals(EMPTY_MAP, getStatistic());
         assertEquals(expected2, player2.getPlayerStatistic());
     }
 

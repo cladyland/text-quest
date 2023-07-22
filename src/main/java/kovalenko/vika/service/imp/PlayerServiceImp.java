@@ -1,52 +1,50 @@
 package kovalenko.vika.service.imp;
 
+import kovalenko.vika.common.entities.Player;
+import kovalenko.vika.common.exception.RegisterException;
 import kovalenko.vika.db.PlayerRepository;
 import kovalenko.vika.common.constant.Status;
 import kovalenko.vika.common.dto.PlayerDTO;
 import kovalenko.vika.common.mapper.PlayerMapper;
 import kovalenko.vika.service.PlayerService;
+import kovalenko.vika.util.AppUtil;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
+@AllArgsConstructor
 public class PlayerServiceImp implements PlayerService {
     private final PlayerMapper playerMapper = PlayerMapper.INSTANCE;
     @NonNull
     private final PlayerRepository playerRepository;
 
-    public PlayerServiceImp(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
-
     @Override
     public PlayerDTO register(String nickName) {
-        if (nickNameIsBusy(nickName) || isNull(nickName)) {
+        if (isNull(nickName) || nickNameIsBusy(nickName)) {
             log.debug("The user '{}' is not registered: nickname is already taken or equals null", nickName);
-            return null;
+            throw new RegisterException("Sorry, this name is already taken");
         }
 
-        return playerMapper.toDTO(playerRepository.registerNewPlayer(nickName));
+        Player newPlayer = playerRepository.registerNewPlayer(nickName);
+        return playerMapper.toDTO(newPlayer);
     }
 
     @Override
     public PlayerDTO updatePlayerStatistic(String player, Status status) {
-        String failStatsChange = "Failed to change player's statistic: ";
+        String failStatsChange = "Failed to change player's statistic because is null: ";
 
-        if (isNull(player)) {
-            log.error(failStatsChange + "player is null");
-            throw new NullPointerException("Player cannot be null!");
-        }
-        if (isNull(status)) {
-            log.error(failStatsChange + "status is null");
-            throw new NullPointerException("Status cannot be null!");
-        }
+        AppUtil.ifNullAddLogAndThrowException(player, "Player", log, failStatsChange + "player");
+        AppUtil.ifNullAddLogAndThrowException(status, "Status", log, failStatsChange + "status");
 
-        return playerMapper.toDTO(playerRepository.increaseNumberOfGames(player, status));
+        Player updated = playerRepository.increaseNumberOfGames(player, status);
+        return playerMapper.toDTO(updated);
     }
 
     private boolean nickNameIsBusy(String name) {
-        return playerRepository.getByNickname(name) != null;
+        return nonNull(playerRepository.getByNickname(name));
     }
 }

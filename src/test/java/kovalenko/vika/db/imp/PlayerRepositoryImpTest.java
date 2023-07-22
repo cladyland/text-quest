@@ -6,8 +6,7 @@ import kovalenko.vika.common.exception.RegisterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-
+import static kovalenko.vika.TestConstant.EMPTY_MAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,7 +32,7 @@ class PlayerRepositoryImpTest {
         Player player = registerTestPlayer();
 
         assertEquals(NICK_NAME, player.getNickName());
-        assertEquals(new HashMap<>(), player.getPlayerStatistic());
+        assertEquals(EMPTY_MAP, player.getPlayerStatistic());
     }
 
     @Test
@@ -45,13 +44,11 @@ class PlayerRepositoryImpTest {
 
     @Test
     void change_player_statistic() {
-        var emptyMap = new HashMap<>();
-
         Player player = registerTestPlayer();
-        assertEquals(emptyMap, player.getPlayerStatistic());
+        assertEquals(EMPTY_MAP, player.getPlayerStatistic());
 
         playerRepository.increaseNumberOfGames(NICK_NAME, Status.VICTORY);
-        assertNotEquals(emptyMap, player.getPlayerStatistic());
+        assertNotEquals(EMPTY_MAP, player.getPlayerStatistic());
     }
 
     @Test
