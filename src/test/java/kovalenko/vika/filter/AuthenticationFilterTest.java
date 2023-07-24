@@ -1,75 +1,62 @@
 package kovalenko.vika.filter;
 
-import kovalenko.vika.filter.AuthenticationFilter;
+import kovalenko.vika.common.entities.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 
-import javax.servlet.FilterChain;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class AuthenticationFilterTest {
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
-    @Mock
-    private FilterChain chain;
-    @Mock
-    private HttpSession session;
-    @Mock
-    private RequestDispatcher dispatcher;
-    @Mock
-    private ServletContext context;
-    private AuthenticationFilter authenticationFilter;
+class AuthenticationFilterTest extends AbstractFilterTest {
 
+    @Override
     @BeforeEach
-    void init() {
-        authenticationFilter = new AuthenticationFilter();
-        when(request.getSession()).thenReturn(session);
+    protected void init() throws ServletException {
+        whenSession();
+        filter = new AuthenticationFilter();
+        super.init();
     }
 
     @Test
-    void doFilter_dispatcher_IndexJsp_when_session_is_new() throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(eq(INDEX_JSP.toString()))).thenReturn(dispatcher);
+    void redirect_when_player_is_registered() throws ServletException, IOException {
+        when(session.getAttribute(PLAYER)).thenReturn(Mockito.mock(Player.class));
+
+        super.doFilter();
+
+        verifyRequestNeverGetContext();
+        verifyResponseRedirect(QUEST_LINK);
+    }
+
+    @Test
+    void forward_to_index_when_new_session() throws ServletException, IOException {
+        whenDispatcher();
         when(session.isNew()).thenReturn(true);
-        authenticationFilter.doFilter(request, response, chain);
 
-        verify(dispatcher, times(1)).forward(request, response);
+        super.doFilter();
+        verifyForwardToIndex();
     }
 
     @Test
-    void doFilter_dispatcher_IndexJsp_when_nickName_isNull() throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(eq(INDEX_JSP.toString()))).thenReturn(dispatcher);
-        when(session.getAttribute("nickName")).thenReturn(null);
-        authenticationFilter.doFilter(request, response, chain);
+    void forward_to_index_when_player_is_null() throws ServletException, IOException {
+        whenDispatcher();
+        when(session.isNew()).thenReturn(false);
 
-        verify(dispatcher, times(1)).forward(request, response);
+        super.doFilter();
+        verifyForwardToIndex();
     }
 
-    @Test
-    void doFilter_sendRedirect_to_quest() throws ServletException, IOException {
-        when(session.getAttribute("nickName")).thenReturn("Test");
-        authenticationFilter.doFilter(request, response, chain);
-
-        verify(response, times(1)).sendRedirect("/quest");
+    private void verifyForwardToIndex() throws IOException, ServletException {
+        verifyContextGetDispatcher(INDEX_JSP.toString());
+        verifyDispatcherForward();
+        verify(response, never()).sendRedirect(anyString());
     }
 }

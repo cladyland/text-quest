@@ -63,7 +63,7 @@ public class NewNickNameFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        log.info("'New Nick Name Filter' is destroyed");
+        log.info("'New NickName Filter' is destroyed");
     }
 
     private boolean isWordCharacter(String word) {
@@ -72,7 +72,7 @@ public class NewNickNameFilter implements Filter {
     }
 
     private boolean isUnderscore(String word) {
-        String regex = "\\_*";
+        String regex = "_*";
         return Pattern.matches(regex, word);
     }
 

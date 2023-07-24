@@ -2,83 +2,55 @@ package kovalenko.vika.filter;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import javax.servlet.FilterChain;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static kovalenko.vika.common.constant.AttributeConstant.NICK_NAME;
+import static kovalenko.vika.common.constant.LinkConstant.HOME_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class NewNickNameFilterTest {
-    private final String nickNameParam = "nickName";
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
-    @Mock
-    private FilterChain chain;
-    @Mock
-    private RequestDispatcher dispatcher;
-    @Mock
-    private ServletContext context;
-    private NewNickNameFilter nameFilter;
-
+class NewNickNameFilterTest extends AbstractFilterTest {
+    @Override
     @BeforeEach
-    void init() {
-        nameFilter = new NewNickNameFilter();
+    protected void init() throws ServletException {
+        filter = new NewNickNameFilter();
+        super.init();
     }
 
     @Test
-    void doFilter_redirect_if_nickName_isNull() throws ServletException, IOException {
-        when(request.getParameter(nickNameParam)).thenReturn(null);
-        nameFilter.doFilter(request, response, chain);
+    void chain_do_filter() throws ServletException, IOException {
+        when(request.getParameter(NICK_NAME)).thenReturn("name");
 
-        verify(response, times(1)).sendRedirect("/");
-    }
+        super.doFilter();
 
-    @ParameterizedTest
-    @CsvSource({"*&%", "name*/"})
-    void doFilter_forward_if_name_nonWordCharacter(String nonWordName) throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
-        when(request.getParameter(nickNameParam)).thenReturn(nonWordName);
-        nameFilter.doFilter(request, response, chain);
-
-        verify(dispatcher, times(1)).forward(request, response);
+        verifyResponseNeverRedirect(HOME_LINK);
+        verifyRequestNeverGetContext();
+        verifyChainDoFilter();
     }
 
     @Test
-    void doFilter_forward_if_name_isUnderscoreSymbols() throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
-        when(request.getParameter(nickNameParam)).thenReturn("_______");
-        nameFilter.doFilter(request, response, chain);
+    void redirect_to_home_page_when_nickname_is_null() throws ServletException, IOException {
+        super.doFilter();
 
-        verify(dispatcher, times(1)).forward(request, response);
+        verifyResponseRedirect(HOME_LINK);
+        verifyRequestNeverGetContext();
+        verifyChainNeverDoFilter();
     }
 
     @ParameterizedTest
-    @CsvSource({"Test", "Name098", "_test_", "1056", "_5_"})
-    void doFilter_chain_if_name_isCorrect(String nickName) throws ServletException, IOException {
-        when(request.getParameter(nickNameParam)).thenReturn(nickName);
-        nameFilter.doFilter(request, response, chain);
+    @ValueSource(strings = {"***", "_______", "    ", ""})
+    void forward_when_nickname_is_wrong_characters(String nickname) throws ServletException, IOException {
+        whenDispatcher();
+        when(request.getParameter(NICK_NAME)).thenReturn(nickname);
 
-        verify(chain, times(1)).doFilter(request, response);
-        verify(dispatcher, never()).forward(request, response);
+        super.doFilter();
+
+        verifyContextGetDispatcher(INDEX_JSP.toString());
+        verifyDispatcherForward();
+        verifyChainNeverDoFilter();
     }
 }

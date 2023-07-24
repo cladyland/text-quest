@@ -30,10 +30,7 @@ public class AuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        var currentSession = ((HttpServletRequest) request).getSession();
-        var player = currentSession.getAttribute(PLAYER);
-
-        if (currentSession.isNew() || isNull(player)) {
+        if (isNewSessionOrNullPlayer(request)) {
             request
                     .getServletContext()
                     .getRequestDispatcher(INDEX_JSP.toString())
@@ -47,5 +44,12 @@ public class AuthenticationFilter implements Filter {
     public void destroy() {
         Filter.super.destroy();
         log.info("'Authentication Filter' is destroyed");
+    }
+
+    private boolean isNewSessionOrNullPlayer(ServletRequest request) {
+        var currentSession = ((HttpServletRequest) request).getSession();
+        var player = currentSession.getAttribute(PLAYER);
+
+        return currentSession.isNew() || isNull(player);
     }
 }
