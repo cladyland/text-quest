@@ -1,98 +1,65 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.basis.Player;
+import kovalenko.vika.common.exception.RegisterException;
 import kovalenko.vika.service.PlayerService;
-import kovalenko.vika.servlet.RegisterServlet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
-import static kovalenko.vika.db.PathsJsp.INDEX_JSP;
-import static org.mockito.Mockito.never;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.INDEX_JSP;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class RegisterServletTest {
-    private final String nickNameParam = "nickName";
-    private final String testNick = "Test";
+class RegisterServletTest extends AbstractServletTest {
     @Mock
-    private ServletConfig config;
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
-    @Mock
-    private HttpSession session;
-    @Mock
-    private RequestDispatcher dispatcher;
-    @Mock
-    private ServletContext context;
-    @Mock
-    private PlayerService playerService;
-    @Mock
-    private Player player;
-    private RegisterServlet registerServlet;
+    PlayerService playerService;
+    RegisterServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
-        when(config.getServletContext()).thenReturn(context);
-        when(context.getAttribute("playerService")).thenReturn(playerService);
-
-        registerServlet = new RegisterServlet();
-        registerServlet.init(config);
+    protected void init() throws ServletException {
+        when(context.getAttribute(PLAYER_SERVICE)).thenReturn(playerService);
+        servlet = new RegisterServlet();
+        super.init(servlet);
     }
 
     @Test
-    void doGet_forward_IndexJsp() throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
+    void do_get_forward_to_home_page() throws ServletException, IOException {
+        whenDispatcher();
+        servlet.doGet(request, response);
 
-        registerServlet.doGet(request, response);
-        verify(dispatcher, times(1)).forward(request, response);
+        verifyContextGetDispatcher(INDEX_JSP);
+        verifyDispatcherForward();
     }
 
     @Test
-    void doPost_call_doGet_if_player_isDefault() throws ServletException, IOException {
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher(INDEX_JSP.toString())).thenReturn(dispatcher);
-        when(request.getParameter(nickNameParam)).thenReturn(testNick);
-        when(playerService.register(testNick)).thenReturn(player);
-        when(playerService.isDefaultPlayer(player)).thenReturn(true);
+    void do_post_forward_when_register_exception() throws ServletException, IOException {
+        whenDispatcher();
+        when(playerService.register(null)).thenThrow(RegisterException.class);
 
-        registerServlet.doPost(request, response);
+        servlet.doPost(request, response);
 
-        verify(dispatcher, times(1)).forward(request, response);
-        verify(session, never()).setAttribute("player", player);
-        verify(session, never()).setAttribute(nickNameParam, testNick);
-        verify(response, never()).sendRedirect("/quest");
+        verifyContextGetDispatcher(INDEX_JSP);
+        verifyDispatcherForward();
+        verifyResponseNeverRedirect(QUEST_LINK);
     }
 
     @Test
-    void doPost_sendRedirect() throws ServletException, IOException {
-        when(request.getParameter(nickNameParam)).thenReturn(testNick);
-        when(playerService.register(testNick)).thenReturn(player);
-        when(playerService.isDefaultPlayer(player)).thenReturn(false);
-        when(request.getSession()).thenReturn(session);
+    void do_post_redirect_to_quest() throws ServletException, IOException {
+        whenSession();
+        servlet.doPost(request, response);
 
-        registerServlet.doPost(request, response);
-
-        verify(dispatcher, never()).forward(request, response);
-        verify(session, times(1)).setAttribute("player", player);
-        verify(session, times(1)).setAttribute(nickNameParam, testNick);
-        verify(response, times(1)).sendRedirect("/quest");
+        verifyRequestNeverGetContext();
+        verify(session, times(1)).setAttribute(PLAYER, eq(any()));
+        verifyResponseRedirect(QUEST_LINK);
     }
 }

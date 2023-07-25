@@ -4,6 +4,7 @@ import kovalenko.vika.common.constant.Status;
 import kovalenko.vika.common.constant.PathsJsp;
 import kovalenko.vika.common.dto.CardDTO;
 import kovalenko.vika.common.dto.PlayerDTO;
+import kovalenko.vika.common.exception.QuestDefaultException;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
@@ -58,7 +60,6 @@ public class LogicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
-        var player = (PlayerDTO) session.getAttribute(PLAYER);
         var playerCardId = (Integer) session.getAttribute(CARD_ID);
         String answerParam = req.getParameter(PLAYER_ANSWER_ID);
 
@@ -66,18 +67,24 @@ public class LogicServlet extends HttpServlet {
 
         if (nonNull(answerParam)) {
             int playerAnswerId = Integer.parseInt(answerParam);
-            Status playerStatus = questService.getPlayerAnswerStatus(playerCardId, playerAnswerId);
 
-            if (playerStatus == Status.NEXT) {
-                playerCard = questService.getNextCard(playerCardId);
-                session.setAttribute(CARD_ID, playerCard.getId());
-            } else {
-                setEndgameMessage(playerStatus, playerAnswerId, req);
+            try {
+                Status playerStatus = questService.getPlayerAnswerStatus(playerCardId, playerAnswerId);
 
-                session.setAttribute(PLAYER, playerService.updatePlayerStatistic(player.getNickName(), playerStatus));
-                session.removeAttribute(CARD_ID);
+                if (playerStatus == Status.NEXT) {
+                    playerCard = questService.getNextCard(playerCardId);
+                    session.setAttribute(CARD_ID, playerCard.getId());
+                } else {
+                    setEndgameMessage(playerStatus, playerAnswerId, req);
 
-                forwardTo(END_JSP, req, resp);
+                    session.setAttribute(PLAYER, updatePlayerStatistic(session, playerStatus));
+                    session.removeAttribute(CARD_ID);
+
+                    forwardTo(END_JSP, req, resp);
+                    return;
+                }
+            } catch (QuestDefaultException ex) {
+                resp.sendRedirect(QUEST_LINK);
                 return;
             }
         }
@@ -96,6 +103,11 @@ public class LogicServlet extends HttpServlet {
             endMessage = questService.getVictoryMessage() + "\nYOU WIN";
         }
         request.setAttribute(END, endMessage);
+    }
+
+    private PlayerDTO updatePlayerStatistic(HttpSession session, Status playerStatus) {
+        var player = (PlayerDTO) session.getAttribute(PLAYER);
+        return playerService.updatePlayerStatistic(player.getNickName(), playerStatus);
     }
 
     private void forwardTo(PathsJsp jsp, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

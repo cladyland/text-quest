@@ -1,6 +1,7 @@
 package kovalenko.vika.servlet;
 
 import kovalenko.vika.common.dto.PlayerDTO;
+import kovalenko.vika.common.exception.RegisterException;
 import kovalenko.vika.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static java.util.Objects.isNull;
 import static kovalenko.vika.common.constant.AttributeConstant.NICK_NAME;
 import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
 import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
@@ -46,18 +46,17 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String newNickName = req.getParameter(NICK_NAME);
-        PlayerDTO newPlayer = playerService.register(newNickName);
+        PlayerDTO newPlayer;
 
-        if (isNull(newPlayer)) {
-            String busyName = "Sorry, this name is already taken";
-            req.setAttribute(WRONG_NICK_NAME, busyName);
+        try {
+            newPlayer = playerService.register(newNickName);
+        } catch (RegisterException ex) {
+            req.setAttribute(WRONG_NICK_NAME, ex.getMessage());
             doGet(req, resp);
             return;
         }
 
-        var session = req.getSession();
-        session.setAttribute(PLAYER, newPlayer);
-
+        req.getSession().setAttribute(PLAYER, newPlayer);
         resp.sendRedirect(QUEST_LINK);
     }
 }

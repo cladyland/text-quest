@@ -1,5 +1,6 @@
 package kovalenko.vika;
 
+import kovalenko.vika.common.constant.PathsJsp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,8 +47,8 @@ public abstract class AbstractFilterServletTest {
         verify(request, never()).getServletContext();
     }
 
-    protected void verifyContextGetDispatcher(String path) {
-        verify(context, times(1)).getRequestDispatcher(path);
+    protected void verifyContextGetDispatcher(PathsJsp path) {
+        verify(context, times(1)).getRequestDispatcher(path.toString());
     }
 
     protected void verifyDispatcherForward() throws ServletException, IOException {

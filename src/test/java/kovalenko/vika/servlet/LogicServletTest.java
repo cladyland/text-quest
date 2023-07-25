@@ -1,173 +1,150 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.basis.sentence.Answer;
-import kovalenko.vika.basis.Card;
-import kovalenko.vika.basis.Player;
-import kovalenko.vika.basis.sentence.Question;
-import kovalenko.vika.basis.Status;
+import kovalenko.vika.common.constant.Status;
+import kovalenko.vika.common.dto.CardDTO;
+import kovalenko.vika.common.dto.PlayerDTO;
+import kovalenko.vika.common.dto.QuestionDTO;
+import kovalenko.vika.common.exception.QuestDefaultException;
 import kovalenko.vika.service.PlayerService;
 import kovalenko.vika.service.QuestService;
-import kovalenko.vika.servlet.LogicServlet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import static kovalenko.vika.db.PathsJsp.END_JSP;
-import static kovalenko.vika.db.PathsJsp.QUEST_JSP;
-import static kovalenko.vika.db.PathsJsp.START_JSP;
+import static kovalenko.vika.common.constant.AttributeConstant.ANSWERS;
+import static kovalenko.vika.common.constant.AttributeConstant.CARD_ID;
+import static kovalenko.vika.common.constant.AttributeConstant.END;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_ANSWER_ID;
+import static kovalenko.vika.common.constant.AttributeConstant.PLAYER_SERVICE;
+import static kovalenko.vika.common.constant.AttributeConstant.QUESTION;
+import static kovalenko.vika.common.constant.AttributeConstant.QUEST_SERVICE;
+import static kovalenko.vika.common.constant.LinkConstant.QUEST_LINK;
+import static kovalenko.vika.common.constant.PathsJsp.END_JSP;
+import static kovalenko.vika.common.constant.PathsJsp.QUEST_JSP;
+import static kovalenko.vika.common.constant.PathsJsp.START_JSP;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class LogicServletTest {
+class LogicServletTest extends AbstractServletTest {
     @Mock
-    private ServletConfig config;
+    QuestService questService;
     @Mock
-    private HttpServletRequest request;
+    PlayerService playerService;
     @Mock
-    private HttpServletResponse response;
+    CardDTO cardMock;
     @Mock
-    private HttpSession session;
-    @Mock
-    private ServletContext context;
-    @Mock
-    private RequestDispatcher dispatcher;
-    @Mock
-    private QuestService questService;
-    @Mock
-    private PlayerService playerService;
-    @Mock
-    private Player player;
-    @Mock
-    private Card card;
-    private LogicServlet logicServlet;
+    QuestionDTO questionMock;
+    LogicServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
-        when(config.getServletContext()).thenReturn(context);
-        when(request.getServletContext()).thenReturn(context);
-        when(context.getAttribute("questService")).thenReturn(questService);
-        when(context.getAttribute("playerService")).thenReturn(playerService);
-        when(request.getSession()).thenReturn(session);
+    protected void init() throws ServletException {
+        whenSession();
+        when(context.getAttribute(QUEST_SERVICE)).thenReturn(questService);
+        when(context.getAttribute(PLAYER_SERVICE)).thenReturn(playerService);
 
-        logicServlet = new LogicServlet();
-        logicServlet.init(config);
+        servlet = new LogicServlet();
+        super.init(servlet);
     }
 
     @Test
-    void doGet_forward_StartJsp() throws ServletException, IOException {
-        when(context.getRequestDispatcher(START_JSP.toString())).thenReturn(dispatcher);
-        logicServlet.doGet(request, response);
+    void do_get_remove_cardId_and_forward_to_start_quest() throws ServletException, IOException {
+        whenDispatcher();
 
-        verify(session, times(1)).removeAttribute("cardID");
-        verify(dispatcher, times(1)).forward(request, response);
+        servlet.doGet(request, response);
+
+        verify(session, times(1)).removeAttribute(CARD_ID);
+        verifyContextGetDispatcher(START_JSP);
+        verifyDispatcherForward();
     }
 
     @Test
-    void doPost_if_answerStatus_NEXT_forward_QuestJsp() throws ServletException, IOException {
-        int cardId = 2;
-        int nextCardId = cardId + 1;
-        Question nextQuestion = new Question(nextCardId, "next question");
-        List<Answer> answers = new ArrayList<>();
+    void do_post_forward_when_answer_is_null() throws ServletException, IOException {
+        whenGetCard();
+        whenDispatcher();
+        when(cardMock.getQuestion()).thenReturn(questionMock);
 
-        when(context.getRequestDispatcher(QUEST_JSP.toString())).thenReturn(dispatcher);
-        when(session.getAttribute("player")).thenReturn(player);
-        when(session.getAttribute("cardID")).thenReturn(cardId);
-        when(request.getParameter("playerAnswerId")).thenReturn("22");
-        when(questService.getCurrentCard(cardId)).thenReturn(card);
-        when(questService.getPlayerAnswerStatus(cardId, 22)).thenReturn(Status.NEXT);
-        when(questService.getNextCard(cardId)).thenReturn(card);
-        when(card.getId()).thenReturn(nextCardId);
-        when(card.getQuestion()).thenReturn(nextQuestion);
-        when(card.getAnswers()).thenReturn(answers);
+        servlet.doPost(request, response);
 
-        logicServlet.doPost(request, response);
+        verify(questService, never()).getPlayerAnswerStatus(anyInt(), anyInt());
+        verify(request, times(1)).setAttribute(QUESTION, eq(any()));
+        verify(request, times(1)).setAttribute(ANSWERS, eq(any()));
 
-        verify(session, times(1)).setAttribute("cardID", nextCardId);
-        verify(request, times(1)).setAttribute("question", nextQuestion.getContext());
-        verify(request, times(1)).setAttribute("answers", answers);
-        verify(dispatcher, times(1)).forward(request, response);
+        verifyContextGetDispatcher(QUEST_JSP);
+        verifyDispatcherForward();
     }
 
     @Test
-    void doPost_if_answerStatus_DEFEAT_forward_EndJsp() throws ServletException, IOException {
-        int cardId = 3;
-        int answerId = 31;
-        var playerStatus = Status.DEFEAT;
-        Map<String, Integer> playerStatistic = new HashMap<>();
+    void do_post_set_next_card_and_forward() throws ServletException, IOException {
+        whenGetCard();
+        whenGetAnswerId();
+        whenDispatcher();
 
-        when(context.getRequestDispatcher(END_JSP.toString())).thenReturn(dispatcher);
-        when(session.getAttribute("player")).thenReturn(player);
-        when(session.getAttribute("cardID")).thenReturn(cardId);
-        when(request.getParameter("playerAnswerId")).thenReturn("31");
-        when(questService.getCurrentCard(cardId)).thenReturn(card);
-        when(questService.getPlayerAnswerStatus(cardId, answerId)).thenReturn(Status.DEFEAT);
-        when(playerService.setAndGetPlayerStatistic(player, playerStatus)).thenReturn(playerStatistic);
+        when(cardMock.getQuestion()).thenReturn(questionMock);
+        when(questService.getPlayerAnswerStatus(null, 1)).thenReturn(Status.NEXT);
+        when(cardMock.getId()).thenReturn(1);
+        when(questService.getNextCard(null)).thenReturn(cardMock);
 
-        logicServlet.doPost(request, response);
+        servlet.doPost(request, response);
 
-        verify(request, times(1)).setAttribute("statistic", playerStatistic);
-        verify(session, times(1)).removeAttribute("cardID");
-        verify(dispatcher, times(1)).forward(request, response);
+        verify(session, times(1)).setAttribute(CARD_ID, 1);
+        verify(request, times(1)).setAttribute(QUESTION, eq(any()));
+        verify(request, times(1)).setAttribute(ANSWERS, eq(any()));
+
+        verifyContextGetDispatcher(QUEST_JSP);
+        verifyDispatcherForward();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Status.class, names = {"DEFEAT", "VICTORY"})
+    void do_post_forward_to_end_game(Status status) throws ServletException, IOException {
+        whenGetCard();
+        whenGetAnswerId();
+        whenDispatcher();
+
+        when(session.getAttribute(CARD_ID)).thenReturn(null);
+        when(questService.getPlayerAnswerStatus(null, 1)).thenReturn(status);
+        when(session.getAttribute(PLAYER)).thenReturn(Mockito.mock(PlayerDTO.class));
+
+        servlet.doPost(request, response);
+
+        verify(request, times(1)).setAttribute(eq(END), anyString());
+        verify(session, times(1)).setAttribute(PLAYER, eq(any()));
+        verify(context, never()).getRequestDispatcher(QUEST_JSP.toString());
+
+        verifyContextGetDispatcher(END_JSP);
+        verifyDispatcherForward();
     }
 
     @Test
-    void doPost_if_answerStatus_VICTORY_forward_EndJsp() throws ServletException, IOException {
-        int cardId = 4;
-        int answerId = 42;
-        var playerStatus = Status.VICTORY;
-        Map<String, Integer> playerStatistic = new HashMap<>();
+    void do_post_redirect_when_quest_exception() throws ServletException, IOException {
+        whenGetAnswerId();
+        when(questService.getPlayerAnswerStatus(null, 1)).thenThrow(QuestDefaultException.class);
 
-        when(context.getRequestDispatcher(END_JSP.toString())).thenReturn(dispatcher);
-        when(session.getAttribute("player")).thenReturn(player);
-        when(session.getAttribute("cardID")).thenReturn(cardId);
-        when(request.getParameter("playerAnswerId")).thenReturn("42");
-        when(questService.getCurrentCard(cardId)).thenReturn(card);
-        when(questService.getPlayerAnswerStatus(cardId, answerId)).thenReturn(Status.VICTORY);
-        when(playerService.setAndGetPlayerStatistic(player, playerStatus)).thenReturn(playerStatistic);
+        servlet.doPost(request, response);
 
-        logicServlet.doPost(request, response);
-
-        verify(request, times(1)).setAttribute("statistic", playerStatistic);
-        verify(session, times(1)).removeAttribute("cardID");
-        verify(dispatcher, times(1)).forward(request, response);
+        verifyResponseRedirect(QUEST_LINK);
+        verify(context, never()).getRequestDispatcher(QUEST_JSP.toString());
     }
 
-    @Test
-    void doPost_forward_QuestJsp_if_answerParam_isNull() throws ServletException, IOException {
-        int cardId = 5;
-        var question = new Question(cardId, "Question");
-        List<Answer> answers = new ArrayList<>();
+    private void whenGetCard() {
+        when(questService.getCurrentCard(null)).thenReturn(cardMock);
+    }
 
-        when(context.getRequestDispatcher(QUEST_JSP.toString())).thenReturn(dispatcher);
-        when(session.getAttribute("player")).thenReturn(player);
-        when(session.getAttribute("cardID")).thenReturn(cardId);
-        when(request.getParameter("playerAnswerId")).thenReturn(null);
-        when(questService.getCurrentCard(cardId)).thenReturn(card);
-        when(card.getQuestion()).thenReturn(question);
-        when(card.getAnswers()).thenReturn(answers);
-
-        logicServlet.doPost(request, response);
-
-        verify(request, times(1)).setAttribute("question", question.getContext());
-        verify(request, times(1)).setAttribute("answers", answers);
-        verify(dispatcher, times(1)).forward(request, response);
+    private void whenGetAnswerId() {
+        when(request.getParameter(PLAYER_ANSWER_ID)).thenReturn("1");
     }
 }

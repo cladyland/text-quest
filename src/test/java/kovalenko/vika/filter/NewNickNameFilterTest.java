@@ -49,7 +49,7 @@ class NewNickNameFilterTest extends AbstractFilterTest {
 
         super.doFilter();
 
-        verifyContextGetDispatcher(INDEX_JSP.toString());
+        verifyContextGetDispatcher(INDEX_JSP);
         verifyDispatcherForward();
         verifyChainNeverDoFilter();
     }

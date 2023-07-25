@@ -55,7 +55,7 @@ class AuthenticationFilterTest extends AbstractFilterTest {
     }
 
     private void verifyForwardToIndex() throws IOException, ServletException {
-        verifyContextGetDispatcher(INDEX_JSP.toString());
+        verifyContextGetDispatcher(INDEX_JSP);
         verifyDispatcherForward();
         verify(response, never()).sendRedirect(anyString());
     }
