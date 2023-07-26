@@ -16,11 +16,11 @@
     context: "You accept the challenge. Go up to the bridge to the captain?"
   answers:
   - id: 21
-    context: "Climb the bridge"
-    status: NEXT
-  - id: 22
     context: "Refuse to climb the bridge"
     status: DEFEAT
+  - id: 22
+    context: "Climb the bridge"
+    status: NEXT
 - id: 3
   question:
     id: 3
