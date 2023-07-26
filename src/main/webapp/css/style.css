@@ -1,0 +1,45 @@
+body {
+    background-image: url("/img/background.JPG");
+    background-size: 20%;
+    background-color: darkblue;
+    opacity: 0.75;
+    font-family: "Comic Sans MS", cursive;
+    font-size: large;
+}
+
+h1, h2 {
+    text-shadow: 2px 2px 5px darkviolet;
+}
+
+h3 {
+    color: aqua;
+    text-shadow: 10px 2px 5px aliceblue;
+}
+
+div {
+    width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.start-game {
+    width: 300px;
+    color: aquamarine;
+    text-shadow: 2px 2px 5px deepskyblue;
+    text-align: center;
+    font-size: x-large;
+}
+
+.wrong-name {
+    color: yellow;
+    background-color: rgba(255, 20, 147, .6);
+    font-family: "Calibri", sans-serif;
+    text-align: center;
+}
+
+.end-message {
+    color: beige;
+    text-shadow: 2px 2px 5px greenyellow;
+    font-size: x-large;
+    text-align: center;
+}

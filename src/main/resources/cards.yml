@@ -1,0 +1,34 @@
+---
+- id: 1
+  question:
+    id: 1
+    context: "You forgot everything. Accept the UFO challenge?"
+  answers:
+  - id: 11
+    context: "Accept"
+    status: NEXT
+  - id: 12
+    context: "Reject"
+    status: DEFEAT
+- id: 2
+  question:
+    id: 2
+    context: "You accept the challenge. Go up to the bridge to the captain?"
+  answers:
+  - id: 21
+    context: "Refuse to climb the bridge"
+    status: DEFEAT
+  - id: 22
+    context: "Climb the bridge"
+    status: NEXT
+- id: 3
+  question:
+    id: 3
+    context: "You climbed the bridge. Who are you?"
+  answers:
+  - id: 31
+    context: "Tell the truth about yourself"
+    status: VICTORY
+  - id: 32
+    context: "Lie about yourself"
+    status: DEFEAT
